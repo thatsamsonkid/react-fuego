@@ -1,3 +1,2 @@
-export * from "./stories/Button";
-export * from "./stories/Header";
+export * from "./components/Button/Button";
 export * from "./stories/Page";
