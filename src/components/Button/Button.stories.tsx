@@ -17,16 +17,22 @@ export const Primary = Template.bind({});
 Primary.args = {
   level: "primary",
   label: "Primary",
+  corners: "squared",
+  fullWidth: false,
 };
 
 export const Secondary = Template.bind({});
 Secondary.args = {
   label: "Secondary",
   level: "secondary",
+  corners: "squared",
+  fullWidth: false,
 };
 
 export const Tertiary = Template.bind({});
 Tertiary.args = {
   label: "Tertiary",
   level: "tertiary",
+  corners: "squared",
+  fullWidth: false,
 };
