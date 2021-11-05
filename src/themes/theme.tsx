@@ -91,6 +91,9 @@ export const darkTheme = {
       // accent: "#fff",
     },
   },
+  card: {
+    border: "",
+  },
   breakpoints: {
     mobile: `(min-width: 575.98px) and (max-width: 768px)`,
     mobileAndAbove: `(min-width: 575.98px)`,

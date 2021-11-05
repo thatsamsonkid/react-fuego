@@ -1,7 +1,11 @@
 import { theme, darkTheme } from '../src/themes/theme';
 import { withThemesProvider } from "themeprovider-storybook";
 
-export const decorators = [withThemesProvider([darkTheme])];
+// import "bootstrap/dist/css/bootstrap-reboot.min.css";
+import "bootstrap/dist/css/bootstrap-grid.min.css";
+import "bootstrap/dist/css/bootstrap-utilities.min.css";
+
+export const decorators = [withThemesProvider([darkTheme, theme])];
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },

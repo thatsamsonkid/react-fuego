@@ -87,7 +87,7 @@ export const Button = ({
       level={level}
       theme={props.theme}
       corners={corners}
-      loading={loading}
+      $loading={loading}
       loader={loader}
       {...props}
     >
