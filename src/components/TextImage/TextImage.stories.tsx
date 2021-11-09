@@ -4,7 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import TextImage from "./TextImage";
 
 export default {
-  title: "Components/TextImage",
+  title: "Components/Text Image",
   component: TextImage,
   argTypes: {
     // backgroundColor: { control: "color" },

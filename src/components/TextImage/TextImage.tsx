@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
+const TextImageWrapper = styled.section`
+  color: ${({ theme }) => theme.palette && theme.palette.primary.contrastText};
+`;
 const SectionTextContent = styled.div`
   position: relative;
   top: 50%;
@@ -51,7 +54,7 @@ function TextImage({
   );
 
   return (
-    <section className="py-5 my-5">
+    <TextImageWrapper className="py-5 my-5">
       <div className="container">
         <div className={rowClassName}>
           <div className="col-12 col-md">{imgEl}</div>
@@ -63,7 +66,7 @@ function TextImage({
           </div>
         </div>
       </div>
-    </section>
+    </TextImageWrapper>
   );
 }
 
