@@ -27,3 +27,16 @@ ModalCmp.args = {
     </>
   ),
 };
+
+export const FullscreenModalCmp = Template.bind({});
+FullscreenModalCmp.args = {
+  isShowing: true,
+  fullscreen: true,
+  children: (
+    <>
+      <h1>WOOW</h1>
+      <p>dmksdmlksa</p>
+      <button>COol</button>
+    </>
+  ),
+};

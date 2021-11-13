@@ -3,8 +3,32 @@ import { createPortal } from "react-dom";
 import styled, { css } from "styled-components";
 import FocusTrap from "focus-trap-react";
 
+const ModalBackdrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  opacity: 0.5;
+`;
+
 const centeredModal = css`
   min-height: calc(100% - 3.5rem);
+`;
+
+const fullscreenModal = css`
+  width: 100vw;
+  max-width: none;
+  height: 100%;
+  margin: 0;
+
+  .modal-content {
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+  }
 `;
 
 const ModalWrapper = styled.div<IModal>`
@@ -27,6 +51,7 @@ const ModalWrapper = styled.div<IModal>`
     margin: 1.75rem auto;
 
     ${({ position }) => position === "centered" && centeredModal}
+    ${({ fullscreen }) => fullscreen && fullscreenModal}
   }
 
   .modal-content {
@@ -57,6 +82,8 @@ const ModalWrapper = styled.div<IModal>`
       border: 0;
       padding: 0.5rem 1rem 0 0;
       margin: -1rem -1rem -1rem auto;
+      color: ${({ theme }) =>
+        theme.palette && theme.palette.primary.contrastText};
     }
   }
 
@@ -73,6 +100,7 @@ interface IModal {
   position?: string;
   modalHeader?: React.ReactChild;
   children?: React.ReactElement;
+  fullscreen?: boolean;
 }
 
 const Modal = ({
@@ -84,32 +112,35 @@ const Modal = ({
   ...props
 }: IModal) => {
   const modalEl: any = (
-    <FocusTrap>
-      <ModalWrapper
-        position={position}
-        {...props}
-        className="modal"
-        tabIndex={-1}
-        role="dialog"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              {modalHeader}
-              <button
-                type="button"
-                className="close"
-                aria-label="Close"
-                onClick={hide}
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
+    <>
+      <ModalBackdrop></ModalBackdrop>
+      <FocusTrap>
+        <ModalWrapper
+          position={position}
+          {...props}
+          className="modal"
+          tabIndex={-1}
+          role="dialog"
+        >
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                {modalHeader}
+                <button
+                  type="button"
+                  className="close"
+                  aria-label="Close"
+                  onClick={hide}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">{children}</div>
             </div>
-            <div className="modal-body">{children}</div>
           </div>
-        </div>
-      </ModalWrapper>
-    </FocusTrap>
+        </ModalWrapper>
+      </FocusTrap>
+    </>
   );
 
   return isShowing ? createPortal(modalEl, document.body) : null;
