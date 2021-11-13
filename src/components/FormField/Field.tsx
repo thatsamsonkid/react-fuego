@@ -40,7 +40,7 @@ const InFieldFloat = css`
     &--msg {
       transform-origin: 0 0;
       transform: rotateX(270deg);
-      transition: transfrom 2s ease;
+      transition: transform 200ms ease;
       position: absolute;
       color: ${({ theme }) => theme && theme.palette.error.main};
     }
