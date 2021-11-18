@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "author": "Sammy Mohamed <sammy@unbyte.io> (https://unbyte.io)",
   "private": false,
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/thatsamsonkid/react-fuego#readme",
   "dependencies": {
     "@storybook/addons": "^6.3.12",
     "@storybook/theming": "^6.3.12",
