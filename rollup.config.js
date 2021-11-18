@@ -59,7 +59,7 @@ export default {
     postcss(),
     copy({
       targets: [
-        { src: 'README.md', dest: 'dist/build' },
+        { src: 'README.md', dest: 'build' },
       ]
     })
     // terser()
