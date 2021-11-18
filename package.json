@@ -1,6 +1,6 @@
 {
   "name": "@unbyte-io/react-fuego",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Sammy Mohamed <sammy@unbyte.io> (https://unbyte.io)",
   "private": false,
   "dependencies": {
