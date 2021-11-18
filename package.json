@@ -35,6 +35,7 @@
   "module": "./build/index.es.js",
   "scripts": {
     "build": "rollup -c",
+    "publish": "npm publish --access public",
     "test": "react-scripts test",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
