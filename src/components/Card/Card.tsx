@@ -12,7 +12,7 @@ const CardWrapper = styled.section`
     theme.palette && theme.palette.primary.light};
 `;
 
-interface ICard {
+export interface ICard {
   children: any;
 }
 

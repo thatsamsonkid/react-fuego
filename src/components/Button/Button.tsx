@@ -29,8 +29,11 @@ const ButtonWrapper = styled.button<ButtonProps>`
   ${({ fullWidth }) => fullWidth && fullWidthBtn}
 
   // Need to block level css
-  color: ${({ theme, level }: any) =>
-    theme.buttons[level] && theme.buttons[level].fg};
+  color: ${({ level, ...props }) =>
+    level &&
+    props.theme &&
+    props.theme.buttons[level] &&
+    props.theme.buttons[level].fg};
 
   background-color: ${({ theme, level }: any) =>
     theme.buttons[level] && theme.buttons[level].bg};
@@ -40,7 +43,7 @@ const ButtonWrapper = styled.button<ButtonProps>`
 
   &:hover {
     color: ${({ theme, level }: any) =>
-      theme.buttons[level] && theme.buttons[level].hfg};
+      theme?.buttons[level] && theme?.buttons[level].hfg};
 
     background-color: ${({ theme, level }: any) =>
       theme.buttons[level] && theme.buttons[level].hbg};
@@ -52,40 +55,31 @@ const ButtonWrapper = styled.button<ButtonProps>`
   }
 `;
 
-interface ButtonProps {
-  level: "primary" | "secondary" | "tertiary";
-  // size?: "sm" | "md" | "lg";
-  label: string;
+export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
+  level?: "primary" | "secondary" | "tertiary";
   corners?: "squared" | "rounded";
   href?: "";
   linkCmp?: any;
   loading?: boolean;
   loader?: any;
-  theme?: any;
   fullWidth?: boolean;
-  onClick?: () => void;
 }
 
-/**
- * Primary UI component for user interaction
- */
 export const Button = ({
   level = "primary",
-  // size = "md",
   corners = "squared",
-  label,
+  children = "",
   /* Next JS Link or other framework Link */
   linkCmp,
   loading = false,
   loader = <div></div>,
   ...props
 }: ButtonProps) => {
-  const buttonContent = loading ? loader : label;
+  const buttonContent = loading ? loader : children;
   return (
     <ButtonWrapper
       as={props.href ? linkCmp : "button"}
       level={level}
-      theme={props.theme}
       corners={corners}
       $loading={loading}
       loader={loader}

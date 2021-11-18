@@ -3,29 +3,60 @@ import resolve from "@rollup/plugin-node-resolve";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import typescript from "@rollup/plugin-typescript";
 import postcss from "rollup-plugin-postcss";
+import generatePackageJson from 'rollup-plugin-generate-package-json';
+import external from 'rollup-plugin-peer-deps-external';
+// import { terser } from 'rollup-plugin-terser';
+// import alias from 'rollup-plugin-alias';
+import pkg from "./package.json";
 
-import packageJson from "./package.json";
-
+const moduleName = pkg.name.replace(/^@.*\//, "");
+const author = pkg.author;
+const banner = `
+  /**
+   * @license
+   * author: ${author}
+   * ${moduleName}.js v${pkg.version}
+   * Released under the ${pkg.license} license.
+   */
+`;
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   input: "./src/index.ts",
   output: [
     {
-      file: packageJson.main,
+      file: pkg.main,
       format: "cjs",
-      sourcemap: true
+      banner,
+      sourcemap: true,
     },
     {
-      file: packageJson.module,
+      file: pkg.module,
       format: "esm",
-      sourcemap: true
+      sourcemap: true,
+      banner,
+      exports: "named",
     }
   ],
   plugins: [
+    generatePackageJson({
+      baseContents: {
+        name: pkg.name,
+        version:pkg.version,
+        main:pkg.main,
+        private: false,
+        dependencies:pkg.dependencies,
+        peerDependencies: pkg.peerDependencies
+      }
+    }),
+    // alias({entries: {
+    //   'styled-components': '../node_modules/styled-components'
+    // }}),
+    external(),
     peerDepsExternal(),
     resolve(),
     commonjs(),
-    typescript(),
-    postcss()
+    typescript({ tsconfig: './tsconfig.json' }),
+    postcss(),
+    // terser()
   ]
 };

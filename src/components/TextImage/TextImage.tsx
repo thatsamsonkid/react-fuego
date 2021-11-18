@@ -22,7 +22,7 @@ const SectionText = styled.div`
   }
 `;
 
-interface ITextImage {
+export interface ITextImage {
   children: any;
   title?: string;
   titleChild?: any;

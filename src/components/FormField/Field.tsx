@@ -138,7 +138,7 @@ const TextFieldWrapper = styled.div<FieldProps>`
   ${({ theme, floatStyle }) => floatStyle === "inFieldFloat" && InFieldFloat}
 `;
 
-interface FieldProps {
+export interface FieldProps {
   name?: any;
   value?: any;
   floatLabel?: boolean;

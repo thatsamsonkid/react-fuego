@@ -19,6 +19,7 @@ Primary.args = {
   label: "Primary",
   corners: "squared",
   fullWidth: false,
+  children: "Primary",
 };
 
 export const Secondary = Template.bind({});
@@ -27,6 +28,7 @@ Secondary.args = {
   level: "secondary",
   corners: "squared",
   fullWidth: false,
+  children: "Secondary",
 };
 
 export const Tertiary = Template.bind({});
@@ -35,4 +37,5 @@ Tertiary.args = {
   level: "tertiary",
   corners: "squared",
   fullWidth: false,
+  children: "Tertiary",
 };

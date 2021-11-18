@@ -3,11 +3,11 @@ import React from "react";
 // import { Header } from './Header';
 import "./page.css";
 
-interface PageProps {
+export interface PageProps {
   user?: {};
-  onLogin: () => void;
-  onLogout: () => void;
-  onCreateAccount: () => void;
+  onLogin?: () => void;
+  onLogout?: () => void;
+  onCreateAccount?: () => void;
 }
 
 export const Page = ({

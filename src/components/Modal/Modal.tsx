@@ -94,7 +94,7 @@ const ModalWrapper = styled.div<IModal>`
   }
 `;
 
-interface IModal {
+export interface IModal {
   isShowing?: boolean;
   hide?: any;
   position?: string;

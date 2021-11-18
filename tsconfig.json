@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "outDir":"./build",
     "lib": [
       "dom",
       "dom.iterable",
@@ -18,9 +19,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "declaration": true,
+    "declarationDir": "."
   },
   "include": [
     "src"
-  ]
+  ],
+  "exclude": [
+    "build",
+    "node_modules",
+    "src/**/*.stories.tsx",
+    "src/**/*.test.tsx"
+  ],
 }
