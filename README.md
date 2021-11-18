@@ -1,6 +1,6 @@
 # **STILL UNDER DEVELOPMENT**
 
-This package is but at the beginning of its creation. Will be publishing a
+This package is but at the beginning of its creation. Will be publishing a version 1.0.0 once library is more useful/functional
 
 # React Fuego Mission
 
