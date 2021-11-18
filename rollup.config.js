@@ -5,8 +5,7 @@ import typescript from "@rollup/plugin-typescript";
 import postcss from "rollup-plugin-postcss";
 import generatePackageJson from 'rollup-plugin-generate-package-json';
 import external from 'rollup-plugin-peer-deps-external';
-// import { terser } from 'rollup-plugin-terser';
-// import alias from 'rollup-plugin-alias';
+import copy from 'rollup-plugin-copy'
 import pkg from "./package.json";
 
 const moduleName = pkg.name.replace(/^@.*\//, "");
@@ -38,6 +37,7 @@ export default {
     }
   ],
   plugins: [
+    
     generatePackageJson({
       baseContents: {
         name: pkg.name,
@@ -57,6 +57,11 @@ export default {
     commonjs(),
     typescript({ tsconfig: './tsconfig.json' }),
     postcss(),
+    copy({
+      targets: [
+        { src: 'README.md', dest: 'dist/build' },
+      ]
+    })
     // terser()
   ]
 };
