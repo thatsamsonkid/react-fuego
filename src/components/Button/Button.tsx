@@ -56,10 +56,10 @@ const ButtonWrapper = styled.button<ButtonProps>`
   }
 `;
 
-export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
+export interface ButtonProps
+  extends React.HTMLProps<HTMLButtonElement | HTMLAnchorElement> {
   level?: "primary" | "secondary" | "tertiary";
   corners?: "squared" | "rounded";
-  href?: string;
   as?: any;
   linkCmp?: any;
   loading?: boolean;
