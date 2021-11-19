@@ -24,16 +24,17 @@ const ButtonWrapper = styled.button<ButtonProps>`
   letter-spacing: 0.3px;
   line-height: 12px;
 
-  ${({ corners }) => (corners === "rounded" ? rounded : squared)}
+  // check for explicit setting, else follow theme
+  ${({ corners, theme }) =>
+    theme.buttons?.corners === "rounded" || corners === "rounded"
+      ? rounded
+      : squared}
 
   ${({ fullWidth }) => fullWidth && fullWidthBtn}
 
   // Need to block level css
-  color: ${({ level, ...props }) =>
-    level &&
-    props.theme &&
-    props.theme.buttons[level] &&
-    props.theme.buttons[level].fg};
+  color: ${({ level, theme }) =>
+    level && theme && theme.buttons[level] && theme.buttons[level].fg};
 
   background-color: ${({ theme, level }: any) =>
     theme.buttons[level] && theme.buttons[level].bg};
@@ -58,7 +59,8 @@ const ButtonWrapper = styled.button<ButtonProps>`
 export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   level?: "primary" | "secondary" | "tertiary";
   corners?: "squared" | "rounded";
-  href?: "";
+  href?: string;
+  as?: any;
   linkCmp?: any;
   loading?: boolean;
   loader?: any;
@@ -67,10 +69,8 @@ export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
 
 export const Button = ({
   level = "primary",
-  corners = "squared",
+  corners,
   children = "",
-  /* Next JS Link or other framework Link */
-  linkCmp,
   loading = false,
   loader = <div></div>,
   ...props
@@ -78,7 +78,7 @@ export const Button = ({
   const buttonContent = loading ? loader : children;
   return (
     <ButtonWrapper
-      as={props.href ? linkCmp : "button"}
+      as={props.href ? "a" : "button"}
       level={level}
       corners={corners}
       $loading={loading}

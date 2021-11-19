@@ -53,6 +53,7 @@ export const darkTheme = {
     },
   },
   buttons: {
+    corners: "rounded",
     primary: {
       bg: "#fff",
       fg: "#000000",

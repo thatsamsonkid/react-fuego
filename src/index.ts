@@ -7,4 +7,3 @@ export * from "./components/TextImage/TextImage";
 
 // Hooks
 export * from "./utils/breakpoints";
-export * from "./stories/Page";

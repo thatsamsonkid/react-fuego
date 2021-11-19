@@ -24,7 +24,8 @@
     "declarationDir": "."
   },
   "include": [
-    "src"
+    "src",
+    "./setupTests.ts"
   ],
   "exclude": [
     "build",
