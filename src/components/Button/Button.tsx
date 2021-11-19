@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import styled, { css } from "styled-components";
 import device from "../../utils/breakpoints";
 
@@ -67,25 +67,31 @@ export interface ButtonProps
   fullWidth?: boolean;
 }
 
-export const Button = ({
-  level = "primary",
-  corners,
-  children = "",
-  loading = false,
-  loader = <div></div>,
-  ...props
-}: ButtonProps) => {
-  const buttonContent = loading ? loader : children;
-  return (
-    <ButtonWrapper
-      as={props.href ? "a" : "button"}
-      level={level}
-      corners={corners}
-      $loading={loading}
-      loader={loader}
-      {...props}
-    >
-      {buttonContent}
-    </ButtonWrapper>
-  );
-};
+export const Button = forwardRef(
+  (
+    {
+      level = "primary",
+      corners,
+      children = "",
+      loading = false,
+      loader = <div></div>,
+      ...props
+    }: ButtonProps,
+    ref
+  ) => {
+    const buttonContent = loading ? loader : children;
+    return (
+      <ButtonWrapper
+        as={props.href ? "a" : "button"}
+        level={level}
+        corners={corners}
+        $loading={loading}
+        loader={loader}
+        ref={ref}
+        {...props}
+      >
+        {buttonContent}
+      </ButtonWrapper>
+    );
+  }
+);
