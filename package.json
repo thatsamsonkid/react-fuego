@@ -8,7 +8,7 @@
   "homepage": "https://github.com/thatsamsonkid/react-fuego#readme",
   "scripts": {
     "build": "rollup -c",
-    "publish": "cd ./build && npm publish --access public",
+    "publish": "npm run build && cd ./build && npm publish --access public",
     "test": "react-scripts test",
     "test-cov": "react-scripts test --coverage",
     "storybook": "start-storybook -p 6006 -s public",
