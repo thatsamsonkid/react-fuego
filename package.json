@@ -12,7 +12,7 @@
   "scripts": {
     "build": "rollup -c",
     "prepare": "npm run build",
-    "publish": "npm publish build --access public",
+    "publish": "npm publish build --access public && git push --tags",
     "test": "react-scripts test",
     "test-cov": "react-scripts test --coverage",
     "storybook": "start-storybook -p 6006 -s public",
