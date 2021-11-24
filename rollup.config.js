@@ -37,7 +37,6 @@ export default {
     }
   ],
   plugins: [
-    
     generatePackageJson({
       baseContents: {
         name: pkg.name,
@@ -48,9 +47,6 @@ export default {
         peerDependencies: pkg.peerDependencies
       }
     }),
-    // alias({entries: {
-    //   'styled-components': '../node_modules/styled-components'
-    // }}),
     external(),
     peerDepsExternal(),
     resolve(),
@@ -62,6 +58,5 @@ export default {
         { src: 'README.md', dest: 'build' },
       ]
     })
-    // terser()
   ]
 };
