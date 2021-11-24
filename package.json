@@ -7,12 +7,9 @@
   "license": "MIT",
   "keywords": [],
   "homepage": "https://github.com/thatsamsonkid/react-fuego#readme",
-  "files": [
-    "build"
-  ],
   "scripts": {
     "build": "rollup -c",
-    "prepare": "npm run build",
+    "buildtonpm": "npm run build && cd ./build && npm publish",
     "postpublish": "git push --tags",
     "test": "react-scripts test",
     "test-cov": "react-scripts test --coverage",
