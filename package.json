@@ -6,17 +6,20 @@
   "description": "",
   "keywords": [],
   "homepage": "https://github.com/thatsamsonkid/react-fuego#readme",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "build": "rollup -c",
-    "prepare": "npm run build && cd ./build",
-    "publish": "npm publish --access public",
+    "prepare": "npm run build",
+    "publish": "npm publish build --access public",
     "test": "react-scripts test",
     "test-cov": "react-scripts test --coverage",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },
   "main": "./build/index.js",
-  "types": "./lib/index.d.ts",
+  "types": "./build/index.d.ts",
   "module": "./build/index.es.js",
   "dependencies": {
     "@storybook/addons": "^6.3.12",
