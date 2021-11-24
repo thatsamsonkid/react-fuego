@@ -4,6 +4,7 @@
   "author": "Sammy Mohamed <sammy@unbyte.io> (https://unbyte.io)",
   "private": false,
   "description": "",
+  "license": "MIT",
   "keywords": [],
   "homepage": "https://github.com/thatsamsonkid/react-fuego#readme",
   "files": [
