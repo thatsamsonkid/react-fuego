@@ -218,6 +218,7 @@ const Field = forwardRef(
     const field =
       type === "textarea" ? (
         <textarea
+          name={name}
           ref={ref}
           id={id}
           cols={30}
@@ -225,6 +226,7 @@ const Field = forwardRef(
           onChange={onChangeHandler}
           onBlur={onBlurHandler}
           onFocus={onFocusHandler}
+          {...props}
         ></textarea>
       ) : (
         <input
