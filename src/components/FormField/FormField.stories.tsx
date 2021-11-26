@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import Field from "./Field";
+import { Field } from "./Field";
 import { useForm } from "react-hook-form";
 
 export default {

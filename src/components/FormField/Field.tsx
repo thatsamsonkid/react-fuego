@@ -145,7 +145,7 @@ export interface FieldProps {
   fieldStyle?: "inFieldFloat" | "outlineFloat" | "outsideFloat";
 }
 
-const Field = forwardRef(
+export const Field = forwardRef(
   (
     {
       name,
@@ -246,5 +246,3 @@ const Field = forwardRef(
     );
   }
 );
-
-export default Field;
