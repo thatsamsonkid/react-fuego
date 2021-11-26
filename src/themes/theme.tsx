@@ -96,10 +96,12 @@ export const darkTheme = {
     border: "",
   },
   formField: {
+    style: "",
+    labelfg: "",
     labelbg: "",
     inputbg: "",
     outline: "",
-    labelfg: "",
+    focusOutline: "",
     errorfg: "",
   },
   breakpoints: {

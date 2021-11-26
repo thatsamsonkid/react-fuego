@@ -1,67 +1,15 @@
-import { useState, useEffect, forwardRef } from "react";
+import { useState, useEffect, useMemo, forwardRef } from "react";
 import FieldFix from "./Field-Fix";
-import styled, { css } from "styled-components";
-
-const InFieldFloat = css`
-  &.sm-form-field label {
-    top: 2.3rem;
-    left: 1.6rem;
-  }
-
-  &.sm-form-field.float-label.filled label,
-  &.sm-form-field.focused.float-label label,
-  &.sm-form-field.has-placeholder label {
-    transform: translate(0, -0.8rem) scale(0.75);
-    opacity: 1 !important;
-  }
-
-  &.sm-form-field input {
-    padding-top: 1.5rem;
-  }
-
-  &.sm-form-field input:focus {
-    outline: 2px solid
-      ${({ theme }) => theme && theme.palette.primary.contrastText};
-  }
-
-  // Error Theme
-  &.sm-form-field.has-error label {
-    color: ${({ theme }) => theme && theme.palette.error.main};
-  }
-
-  &.sm-form-field.has-error input {
-    outline: 2px solid ${({ theme }) => theme && theme.palette.error.main};
-  }
-
-  &.sm-form-field .sm-form-field-error {
-    padding-top: 0.5rem;
-    padding-left: 1.6rem;
-
-    &--msg {
-      transform-origin: 0 0;
-      transform: rotateX(270deg);
-      transition: transform 200ms ease;
-      position: absolute;
-      color: ${({ theme }) => theme && theme.palette.error.main};
-    }
-  }
-
-  &.sm-form-field.has-error .sm-form-field-error {
-    &--msg {
-      transform: rotateX(360deg);
-    }
-  }
-`;
+import styled from "styled-components";
+import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
 
 const TextFieldWrapper = styled.div<FieldProps>`
-  &.sm-form-field {
-    position: relative;
-    padding: 1rem 0;
-    margin: 1rem 0;
-    width: 100%;
-  }
+  position: relative;
+  padding: 1rem 0;
+  margin: 1rem 0;
+  width: 100%;
 
-  &.sm-form-field label {
+  label {
     position: absolute;
     margin: 0;
     left: 1.4rem;
@@ -74,20 +22,20 @@ const TextFieldWrapper = styled.div<FieldProps>`
       max-width 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
   }
 
-  &.sm-form-field.float-label.filled label,
-  &.sm-form-field.focused.float-label label,
-  &.sm-form-field.has-placeholder label {
+  &.float-label.filled label,
+  &.focused.float-label label,
+  &.has-placeholder label {
     opacity: 1 !important;
     background: transparent;
   }
 
-  &.sm-form-field.focused label,
-  &.sm-form-field.focused.filled label,
-  &.sm-form-field.float-label.filled label {
+  &.focused label,
+  &.focused.filled label,
+  &.float-label.filled label {
     opacity: 0;
   }
 
-  &.sm-form-field input {
+  input {
     border-radius: 1.4rem;
     border: none;
     width: 100%;
@@ -97,46 +45,81 @@ const TextFieldWrapper = styled.div<FieldProps>`
     padding: 0 1.6rem;
   }
 
-  &.sm-form-field.sm-form-field--no-outline input {
+  .no-outline input {
     border: none;
   }
 
-  &.sm-form-field.sm-form-field--square input {
+  .square input {
     border-radius: 4px;
   }
 
-  &.sm-form-field input:focus {
+  input:focus {
     outline: 0;
   }
 
   /* prefix  */
 
-  &.sm-form-field .sm-form-field__prefix {
+  .field__prefix {
     position: relative;
   }
 
-  &.sm-form-field .sm-form-field__prefix img {
+  .field__prefix img {
     position: absolute;
     left: 1rem;
     top: 0.3rem;
   }
 
-  &.sm-form-field.has-prefix input {
+  &.has-prefix input {
     padding-left: 3rem;
   }
 
   /* Theme */
-  &.sm-form-field input {
+  input {
     background-color: ${({ theme }) => theme.palette.primary.main};
     color: ${({ theme }) => theme.palette.primary.contrastText};
   }
 
-  &.sm-form-field label {
+  label {
     color: ${({ theme }) => theme.palette.primary.contrastText};
   }
 
-  ${({ theme, floatStyle }) => floatStyle === "inFieldFloat" && InFieldFloat}
+  .error {
+    padding-top: 0.5rem;
+    padding-left: 1.6rem;
+
+    &--msg {
+      transform-origin: 0 0;
+      transform: rotateX(270deg);
+      transition: transform 200ms ease;
+      position: absolute;
+    }
+  }
+
+  &.has-error .error--msg {
+    transform: rotateX(360deg);
+  }
+
+  ${({ theme, fieldStyle }) => selectFieldStyle(theme, fieldStyle)}
 `;
+
+const selectFieldStyle = (theme: any, fieldParam: any) =>
+  switchFieldStyle((theme && theme.formField.style) || fieldParam);
+
+const switchFieldStyle = (fieldStyle: string) => {
+  switch (fieldStyle) {
+    case "outlineFloat":
+      return outlineFieldFloat;
+    case "outsideFloat":
+      return outFieldFloat;
+    default:
+      return InFieldFloat;
+  }
+};
+
+const generateFieldKey = (() => {
+  let count = 0;
+  return () => `field-control-${++count}`;
+})();
 
 export interface FieldProps {
   name?: any;
@@ -159,10 +142,8 @@ export interface FieldProps {
   required?: boolean;
   fieldErrors?: any;
   autocomplete?: any;
-  floatStyle?: "inFieldFloat" | "onOutlineFloat" | "outsideFloat";
+  fieldStyle?: "inFieldFloat" | "outlineFloat" | "outsideFloat";
 }
-
-let fieldId = 0;
 
 const Field = forwardRef(
   (
@@ -177,7 +158,7 @@ const Field = forwardRef(
       type = "text",
       suffix,
       className,
-      fieldName = `field-control-`,
+      fieldName,
       onBlur,
       onChange,
       onFocus,
@@ -185,12 +166,12 @@ const Field = forwardRef(
       errorLabel,
       fieldErrors,
       required,
-      floatStyle = "inFieldFloat",
+      fieldStyle,
       ...props
     }: FieldProps,
     ref: any
   ) => {
-    const [id, setId] = useState(fieldName);
+    const id = useMemo(generateFieldKey, []);
     const [currentVal, setCurrentVal] = useState(value);
     const [isFocused, setFocus] = useState(false);
     const onBlurHandler = (e: any) => {
@@ -206,10 +187,6 @@ const Field = forwardRef(
       onChange && onChange(e);
       setCurrentVal(e.target.value);
     };
-
-    useEffect(() => {
-      setId(fieldName + fieldId++);
-    }, []);
 
     useEffect(() => {
       console.log(fieldErrors);
@@ -245,24 +222,24 @@ const Field = forwardRef(
     return (
       <>
         <TextFieldWrapper
-          className={`sm-form-field ${
-            isFocused || floatLabelAlways ? "focused" : ""
-          } ${floatLabel ? "float-label" : ""} ${currentVal ? "filled" : ""} ${
+          className={`${isFocused || floatLabelAlways ? "focused" : ""} ${
+            floatLabel ? "float-label" : ""
+          } ${currentVal ? "filled" : ""} ${
             placeholder ? "has-placeholder" : " "
           } ${prefix ? "has-prefix" : ""} 
           ${className ? className : ""} ${fieldErrors ? "has-error" : ""}`}
-          floatStyle={floatStyle}
+          fieldStyle={fieldStyle}
           {...props}
         >
           <FieldFix type="prefix">{prefix}</FieldFix>
           {field}
           <label htmlFor={fieldName}>
             {children}
-            {required && <span className="sm-form-field-required">*</span>}
+            {required && <span className="required">*</span>}
           </label>
           <FieldFix type="suffix">{suffix}</FieldFix>
-          <div className="sm-form-field-error">
-            <span className="sm-form-field-error--msg">{errorLabel}</span>
+          <div className="error">
+            <span className="error--msg">{errorLabel}</span>
           </div>
         </TextFieldWrapper>
       </>
