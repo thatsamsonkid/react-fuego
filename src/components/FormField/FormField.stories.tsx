@@ -55,3 +55,11 @@ TextField.args = {
   floatLabel: true,
   autocomplete: "off",
 };
+
+export const TextArea = Template.bind({});
+TextArea.args = {
+  name: "name",
+  floatLabel: true,
+  autocomplete: "off",
+  type: "textarea",
+};

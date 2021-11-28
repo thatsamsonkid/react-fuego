@@ -45,15 +45,32 @@ const TextFieldWrapper = styled.div<FieldProps>`
     padding: 0 1.6rem;
   }
 
-  .no-outline input {
+  textarea {
+    border: none;
+    width: 100%;
+    font-size: 1.6rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 4.4rem;
+    padding: 0;
+  }
+
+  .wrapper-textarea {
+    border-radius: 1.4rem;
+    min-height: 4.4rem;
+    padding: 1rem 1.7rem;
+  }
+
+  /* .no-outline input {
     border: none;
   }
 
   .square input {
     border-radius: 4px;
-  }
+  } */
 
-  input:focus {
+  input:focus,
+  textarea:focus {
     outline: 0;
   }
 
@@ -74,7 +91,9 @@ const TextFieldWrapper = styled.div<FieldProps>`
   }
 
   /* Theme */
-  input {
+  input,
+  textarea,
+  .wrapper-textarea {
     background-color: ${({ theme }) => theme.palette.primary.main};
     color: ${({ theme }) => theme.palette.primary.contrastText};
   }
@@ -194,17 +213,19 @@ export const Field = forwardRef(
 
     const field =
       type === "textarea" ? (
-        <textarea
-          name={name}
-          ref={ref}
-          id={id}
-          cols={30}
-          rows={2}
-          onChange={onChangeHandler}
-          onBlur={onBlurHandler}
-          onFocus={onFocusHandler}
-          {...props}
-        ></textarea>
+        <div className="wrapper-textarea">
+          <textarea
+            name={name}
+            ref={ref}
+            id={id}
+            cols={30}
+            rows={2}
+            onChange={onChangeHandler}
+            onBlur={onBlurHandler}
+            onFocus={onFocusHandler}
+            {...props}
+          ></textarea>
+        </div>
       ) : (
         <input
           name={name}
@@ -237,6 +258,7 @@ export const Field = forwardRef(
             {children}
             {required && <span className="required">*</span>}
           </label>
+          <div></div>
           <FieldFix type="suffix">{suffix}</FieldFix>
           <div className="error">
             <span className="error--msg">{errorLabel}</span>

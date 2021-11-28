@@ -1,10 +1,6 @@
 import { css } from "styled-components";
 
-const themeOrDefault = (
-  theme: any,
-  fieldThemeOverride: any,
-  fieldThemeDefault: any
-) => {
+const themeOrDefault = (fieldThemeOverride: any, fieldThemeDefault: any) => {
   return fieldThemeOverride || fieldThemeDefault;
 };
 
@@ -23,12 +19,12 @@ export const outFieldFloat = css`
     left: 1.5rem;
   }
 
-  input {
+  input,
+  textarea {
     outline: 2px solid
       ${({ theme }) =>
         theme &&
         themeOrDefault(
-          theme,
           theme.formField.inputbg,
           theme.palette.primary.contrastText
         )};
@@ -38,24 +34,21 @@ export const outFieldFloat = css`
   &.has-error label {
     color: ${({ theme }) =>
       theme &&
-      themeOrDefault(theme, theme.formField.errorfg, theme.palette.error.main)};
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
-  &.has-error input {
+  &.has-error input,
+  &.has-error textarea {
     outline: 2px solid
       ${({ theme }) =>
         theme &&
-        themeOrDefault(
-          theme,
-          theme.formField.errorfg,
-          theme.palette.error.main
-        )};
+        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   .error--msg {
     color: ${({ theme }) =>
       theme &&
-      themeOrDefault(theme, theme.formField.errorfg, theme.palette.error.main)};
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 `;
 
@@ -71,8 +64,7 @@ export const outlineFieldFloat = css`
     transform: translate(0, -0.8rem) scale(0.75);
     opacity: 1 !important;
     background-color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme, theme.formField.labelbg, theme.backgroundColor)};
+      theme && themeOrDefault(theme.formField.labelbg, theme.backgroundColor)};
     top: 1rem;
     left: 0.9rem;
     padding: 0 0.75rem;
@@ -84,7 +76,6 @@ export const outlineFieldFloat = css`
       ${({ theme }) =>
         theme &&
         themeOrDefault(
-          theme,
           theme.formField.outline,
           theme.palette.primary.contrastText
         )};
@@ -95,7 +86,28 @@ export const outlineFieldFloat = css`
         ${({ theme }) =>
           theme &&
           themeOrDefault(
-            theme,
+            theme.formField.focusOutline,
+            theme.palette.primary.contrastText
+          )};
+    }
+  }
+
+  textarea {
+    background-color: ${({ theme }) => theme.backgroundColor};
+    outline: 2px solid
+      ${({ theme }) =>
+        theme &&
+        themeOrDefault(
+          theme.formField.outline,
+          theme.palette.primary.contrastText
+        )};
+
+    :focus {
+      padding: 0 1.45rem;
+      outline: 2px solid
+        ${({ theme }) =>
+          theme &&
+          themeOrDefault(
             theme.formField.focusOutline,
             theme.palette.primary.contrastText
           )};
@@ -106,27 +118,25 @@ export const outlineFieldFloat = css`
   &.has-error label {
     color: ${({ theme }) =>
       theme &&
-      themeOrDefault(theme, theme.formField.errorfg, theme.palette.error.main)};
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
-  &.has-error input {
+  &.has-error input,
+  &.has-error textarea {
     outline: 2px solid
       ${({ theme }) =>
         theme &&
-        themeOrDefault(
-          theme,
-          theme.formField.errorfg,
-          theme.palette.error.main
-        )};
+        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   .error--msg {
     color: ${({ theme }) =>
       theme &&
-      themeOrDefault(theme, theme.formField.errorfg, theme.palette.error.main)};
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 `;
 
+// Default
 export const InFieldFloat = css`
   label {
     top: 2.3rem;
@@ -140,36 +150,42 @@ export const InFieldFloat = css`
     opacity: 1 !important;
   }
 
+  input,
+  .wrapper-textarea {
+    padding-top: 1.5rem;
+
+    :focus {
+      outline: 2px solid
+        ${({ theme }) => theme && theme.palette.primary.contrastText};
+    }
+  }
+
   input {
     padding-top: 1.5rem;
   }
 
-  input:focus {
-    outline: 2px solid
-      ${({ theme }) => theme && theme.palette.primary.contrastText};
+  .wrapper-textarea {
+    padding-top: 2rem;
   }
 
   &.has-error label {
     color: ${({ theme }) =>
       theme &&
-      themeOrDefault(theme, theme.formField.errorfg, theme.palette.error.main)};
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   // Error Theme
-  &.has-error input {
+  &.has-error input,
+  &.has-error .wrapper-textarea {
     outline: 2px solid
       ${({ theme }) =>
         theme &&
-        themeOrDefault(
-          theme,
-          theme.formField.errorfg,
-          theme.palette.error.main
-        )};
+        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   .error--msg {
     color: ${({ theme }) =>
       theme &&
-      themeOrDefault(theme, theme.formField.errorfg, theme.palette.error.main)};
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 `;
