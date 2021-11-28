@@ -38,7 +38,7 @@ export const outFieldFloat = css`
   }
 
   &.has-error input,
-  &.has-error textarea {
+  &.has-error .wrapper-textarea {
     outline: 2px solid
       ${({ theme }) =>
         theme &&
@@ -105,17 +105,16 @@ export const outlineFieldFloat = css`
           theme.formField.outline,
           theme.palette.primary.contrastText
         )};
+  }
 
-    :focus {
-      padding: 0 1.45rem;
-      outline: 2px solid
-        ${({ theme }) =>
-          theme &&
-          themeOrDefault(
-            theme.formField.focusOutline,
-            theme.palette.primary.contrastText
-          )};
-    }
+  &.focused .wrapper-textarea {
+    outline: 2px solid
+      ${({ theme }) =>
+        theme &&
+        themeOrDefault(
+          theme.formField.focusOutline,
+          theme.palette.primary.contrastText
+        )};
   }
 
   // Error Theme
@@ -126,7 +125,7 @@ export const outlineFieldFloat = css`
   }
 
   &.has-error input,
-  &.has-error textarea {
+  &.has-error .wrapper-textarea {
     outline: 2px solid
       ${({ theme }) =>
         theme &&
@@ -154,14 +153,18 @@ export const InFieldFloat = css`
     opacity: 1 !important;
   }
 
-  input,
-  .wrapper-textarea {
+  input {
     padding-top: 1.5rem;
 
     :focus {
       outline: 2px solid
         ${({ theme }) => theme && theme.palette.primary.contrastText};
     }
+  }
+
+  &.focused .wrapper-textarea {
+    outline: 2px solid
+      ${({ theme }) => theme && theme.palette.primary.contrastText};
   }
 
   input {
