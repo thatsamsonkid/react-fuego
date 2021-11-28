@@ -20,7 +20,7 @@ export const outFieldFloat = css`
   }
 
   input,
-  textarea {
+  .wrapper-textarea {
     outline: 2px solid
       ${({ theme }) =>
         theme &&
@@ -93,6 +93,10 @@ export const outlineFieldFloat = css`
   }
 
   textarea {
+    background-color: ${({ theme }) => theme.backgroundColor};
+  }
+
+  .wrapper-textarea {
     background-color: ${({ theme }) => theme.backgroundColor};
     outline: 2px solid
       ${({ theme }) =>
