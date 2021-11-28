@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, forwardRef } from "react";
 import FieldFix from "./Field-Fix";
 import styled from "styled-components";
 import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
+import { themeOrDefault } from "../../utils/theme-utils";
 
 const TextFieldWrapper = styled.div<FieldProps>`
   position: relative;
@@ -53,6 +54,7 @@ const TextFieldWrapper = styled.div<FieldProps>`
     resize: vertical;
     min-height: 4.4rem;
     padding: 0;
+    max-height: 10rem;
   }
 
   .wrapper-textarea {
@@ -90,18 +92,7 @@ const TextFieldWrapper = styled.div<FieldProps>`
     padding-left: 3rem;
   }
 
-  /* Theme */
-  input,
-  textarea,
-  .wrapper-textarea {
-    background-color: ${({ theme }) => theme.palette.primary.main};
-    color: ${({ theme }) => theme.palette.primary.contrastText};
-  }
-
-  label {
-    color: ${({ theme }) => theme.palette.primary.contrastText};
-  }
-
+  /* Error  */
   .error {
     padding-top: 0.5rem;
     padding-left: 1.6rem;
@@ -118,7 +109,53 @@ const TextFieldWrapper = styled.div<FieldProps>`
     transform: rotateX(360deg);
   }
 
+  /* Theme */
+  input,
+  textarea,
+  .wrapper-textarea {
+    background-color: ${({ theme }) => theme.palette.primary.main};
+    color: ${({ theme }) => theme.palette.primary.contrastText};
+  }
+
+  label {
+    color: ${({ theme }) => theme.palette.primary.contrastText};
+
+    .required {
+      color: ${({ theme }) =>
+        theme &&
+        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+    }
+  }
+
   ${({ theme, fieldStyle }) => selectFieldStyle(theme, fieldStyle)}
+
+  // Error Theme
+  &.has-error label {
+    color: ${({ theme }) =>
+      theme &&
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+  }
+
+  &.has-error input,
+  &.has-error .wrapper-textarea {
+    outline: 2px solid
+      ${({ theme }) =>
+        theme &&
+        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+  }
+
+  &.has-error input,
+  &.has-error textarea {
+    caret-color: ${({ theme }) =>
+      theme &&
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+  }
+
+  .error--msg {
+    color: ${({ theme }) =>
+      theme &&
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+  }
 `;
 
 const selectFieldStyle = (theme: any, fieldParam: any) =>

@@ -1,8 +1,5 @@
 import { css } from "styled-components";
-
-const themeOrDefault = (fieldThemeOverride: any, fieldThemeDefault: any) => {
-  return fieldThemeOverride || fieldThemeDefault;
-};
+import { themeOrDefault } from "../../utils/theme-utils";
 
 export const outFieldFloat = css`
   label {
@@ -28,27 +25,6 @@ export const outFieldFloat = css`
           theme.formField.inputbg,
           theme.palette.primary.contrastText
         )};
-  }
-
-  // Error Theme
-  &.has-error label {
-    color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
-  }
-
-  &.has-error input,
-  &.has-error .wrapper-textarea {
-    outline: 2px solid
-      ${({ theme }) =>
-        theme &&
-        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
-  }
-
-  .error--msg {
-    color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 `;
 
@@ -116,27 +92,6 @@ export const outlineFieldFloat = css`
           theme.palette.primary.contrastText
         )};
   }
-
-  // Error Theme
-  &.has-error label {
-    color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
-  }
-
-  &.has-error input,
-  &.has-error .wrapper-textarea {
-    outline: 2px solid
-      ${({ theme }) =>
-        theme &&
-        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
-  }
-
-  .error--msg {
-    color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
-  }
 `;
 
 // Default
@@ -173,26 +128,5 @@ export const InFieldFloat = css`
 
   .wrapper-textarea {
     padding-top: 2rem;
-  }
-
-  &.has-error label {
-    color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
-  }
-
-  // Error Theme
-  &.has-error input,
-  &.has-error .wrapper-textarea {
-    outline: 2px solid
-      ${({ theme }) =>
-        theme &&
-        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
-  }
-
-  .error--msg {
-    color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 `;
