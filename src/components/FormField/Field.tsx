@@ -189,7 +189,6 @@ export interface FieldProps {
   suffix?: any;
   className?: string;
   props?: any;
-  fieldName?: any;
   onBlur?: any;
   onChange?: any;
   onFocus?: any;
@@ -214,7 +213,6 @@ export const Field = forwardRef(
       type = "text",
       suffix,
       className,
-      fieldName,
       onBlur,
       onChange,
       onFocus,
@@ -291,7 +289,7 @@ export const Field = forwardRef(
         >
           <FieldFix type="prefix">{prefix}</FieldFix>
           {field}
-          <label htmlFor={fieldName}>
+          <label htmlFor={name}>
             {children}
             {required && <span className="required">*</span>}
           </label>
