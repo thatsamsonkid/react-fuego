@@ -289,7 +289,7 @@ export const Field = forwardRef(
         >
           <FieldFix type="prefix">{prefix}</FieldFix>
           {field}
-          <label htmlFor={name}>
+          <label htmlFor={id}>
             {children}
             {required && <span className="required">*</span>}
           </label>
