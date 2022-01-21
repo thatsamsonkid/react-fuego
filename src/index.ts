@@ -1,11 +1,11 @@
-export * from "./components/Button/Button";
-export * from "./components/Card/Card";
+export * from "./components/button/Button";
+export * from "./components/card/Card";
 
-export * from "./components/FormField";
+export * from "./components/formField";
 
-export * from "./components/Modal/Modal";
-export * from "./components/Modal/useModal";
-export * from "./components/TextImage/TextImage";
+export * from "./components/modal/Modal";
+export * from "./components/modal/useModal";
+export * from "./components/textImage/TextImage";
 
 // Hooks
 export * from "./utils/breakpoints";

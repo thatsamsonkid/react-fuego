@@ -32,7 +32,7 @@ export interface ITextImage {
   orderReverse?: boolean;
 }
 
-function TextImage({
+export function TextImage({
   children,
   title = "",
   img = "",
@@ -69,5 +69,3 @@ function TextImage({
     </TextImageWrapper>
   );
 }
-
-export default TextImage;
