@@ -16,8 +16,6 @@ export interface ICard {
   children: any;
 }
 
-function Card({ children, ...props }: ICard) {
+export function Card({ children, ...props }: ICard) {
   return <CardWrapper {...props}>{children}</CardWrapper>;
 }
-
-export default Card;

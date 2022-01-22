@@ -1,6 +1,6 @@
 import React from "react";
 
-const FieldFix = ({ children, type }: any) => {
+export const FieldFix = ({ children, type }: any) => {
   if (children) {
     return (
       <div
@@ -14,5 +14,3 @@ const FieldFix = ({ children, type }: any) => {
   }
   return null;
 };
-
-export default FieldFix;

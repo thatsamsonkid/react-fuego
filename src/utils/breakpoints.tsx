@@ -1,4 +1,4 @@
-const device = {
+export const device = {
   mobile: `(min-width: 575.98px) and (max-width: 768px)`,
   mobileAndAbove: `(min-width: 575.98px)`,
   tabletAndbelow: `(max-width: 768px)`,
@@ -7,5 +7,3 @@ const device = {
   desktopAndAbove: `(min-width: 993px)`,
   lgDesktopAndAbove: `(min-width: 1300px)`,
 };
-
-export default device;

@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import styled, { css } from "styled-components";
-import device from "../../utils/breakpoints";
+import { device } from "../../utils/breakpoints";
 
 const rounded = css`
   border-radius: 3rem;

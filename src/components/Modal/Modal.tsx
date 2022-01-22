@@ -103,7 +103,7 @@ export interface IModal {
   fullscreen?: boolean;
 }
 
-const Modal = ({
+export const Modal = ({
   isShowing = false,
   hide,
   modalHeader,
@@ -145,5 +145,3 @@ const Modal = ({
 
   return isShowing ? createPortal(modalEl, document.body) : null;
 };
-
-export default Modal;

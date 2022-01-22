@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, forwardRef } from "react";
-import FieldFix from "./Field-Fix";
+import { FieldFix } from "./Field-Fix";
 import styled from "styled-components";
 import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
 import { themeOrDefault } from "../../utils/theme-utils";
