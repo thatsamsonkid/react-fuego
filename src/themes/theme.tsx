@@ -94,6 +94,18 @@ export const darkTheme = {
   },
   card: {
     border: "",
+    primary: {
+      bg: "#7bd9a7",
+      fg: "#003365",
+    },
+    secondary: {
+      bg: "#484848",
+      fg: "#fff",
+    },
+    tertiary: {
+      bg: "#003365",
+      fg: "#fff",
+    },
   },
   formField: {
     style: "",

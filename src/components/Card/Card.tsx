@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { ThemeLevel } from "../../models/themeModel";
 
 const CardWrapper = styled.section`
   padding: 2.5rem;
@@ -6,13 +7,14 @@ const CardWrapper = styled.section`
   position: relative;
   box-shadow: ${({ theme }: any) => theme.card && theme.card.border};
   border-radius: 4px;
-  color: ${({ theme }: any) =>
-    theme.palette && theme.palette.primary.contrastText};
-  background-color: ${({ theme }: any) =>
-    theme.palette && theme.palette.primary.light};
+  color: ${({ theme, level = "primary" }: any) =>
+    theme && theme.card && theme.card[level].fg};
+  background-color: ${({ theme, level = "primary" }: any) =>
+    theme && theme.card && theme.card[level].bg};
 `;
 
 export interface ICard {
+  level?: ThemeLevel;
   children: any;
 }
 
