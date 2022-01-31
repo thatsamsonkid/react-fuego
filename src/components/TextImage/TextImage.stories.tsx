@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import TextImage from "./TextImage";
+import { TextImage } from "./TextImage";
 
 export default {
   title: "Components/Text Image",

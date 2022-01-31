@@ -1,5 +1,5 @@
 import { css } from "styled-components";
-import { themeOrDefault } from "../../utils/theme-utils";
+import { themeOrDefault } from "../../../utils/theme-utils";
 
 export type FieldStyle = "default" | "outline" | "invisible";
 export const outFieldFloat = css`
@@ -21,11 +21,11 @@ export const outFieldFloat = css`
   .wrapper-textarea {
     outline: 2px solid
       ${({ theme }) =>
-        theme &&
-        themeOrDefault(
-          theme.formField.inputbg,
-          theme.palette.primary.contrastText
-        )};
+    theme &&
+    themeOrDefault(
+      theme.formField.inputbg,
+      theme.palette.primary.contrastText
+    )};
   }
 `;
 
@@ -41,7 +41,7 @@ export const outlineFieldFloat = css`
     transform: translate(0, -0.8rem) scale(0.75);
     opacity: 1 !important;
     background-color: ${({ theme }) =>
-      theme && themeOrDefault(theme.formField.labelbg, theme.backgroundColor)};
+    theme && themeOrDefault(theme.formField.labelbg, theme.backgroundColor)};
     top: 1rem;
     left: 0.9rem;
     padding: 0 0.75rem;
@@ -51,21 +51,21 @@ export const outlineFieldFloat = css`
     background-color: ${({ theme }) => theme.backgroundColor};
     outline: 2px solid
       ${({ theme }) =>
-        theme &&
-        themeOrDefault(
-          theme.formField.outline,
-          theme.palette.primary.contrastText
-        )};
+    theme &&
+    themeOrDefault(
+      theme.formField.outline,
+      theme.palette.primary.contrastText
+    )};
 
     &:focus {
       padding: 0 1.45rem;
       outline: 2px solid
         ${({ theme }) =>
-          theme &&
-          themeOrDefault(
-            theme.formField.focusOutline,
-            theme.palette.primary.contrastText
-          )};
+    theme &&
+    themeOrDefault(
+      theme.formField.focusOutline,
+      theme.palette.primary.contrastText
+    )};
     }
   }
 
@@ -77,21 +77,21 @@ export const outlineFieldFloat = css`
     background-color: ${({ theme }) => theme.backgroundColor};
     outline: 2px solid
       ${({ theme }) =>
-        theme &&
-        themeOrDefault(
-          theme.formField.outline,
-          theme.palette.primary.contrastText
-        )};
+    theme &&
+    themeOrDefault(
+      theme.formField.outline,
+      theme.palette.primary.contrastText
+    )};
   }
 
   &.focused .wrapper-textarea {
     outline: 2px solid
       ${({ theme }) =>
-        theme &&
-        themeOrDefault(
-          theme.formField.focusOutline,
-          theme.palette.primary.contrastText
-        )};
+    theme &&
+    themeOrDefault(
+      theme.formField.focusOutline,
+      theme.palette.primary.contrastText
+    )};
   }
 `;
 

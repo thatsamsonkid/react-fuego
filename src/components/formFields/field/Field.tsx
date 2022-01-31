@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, forwardRef } from "react";
 import { FieldFix } from "./Field-Fix";
 import styled from "styled-components";
 import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
-import { themeOrDefault } from "../../utils/theme-utils";
+import { themeOrDefault } from "../../../utils/theme-utils";
 
 const TextFieldWrapper = styled.div<FieldProps>`
   position: relative;
@@ -122,8 +122,8 @@ const TextFieldWrapper = styled.div<FieldProps>`
 
     .required {
       color: ${({ theme }) =>
-        theme &&
-        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+    theme &&
+    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
     }
   }
 
@@ -132,29 +132,29 @@ const TextFieldWrapper = styled.div<FieldProps>`
   // Error Theme
   &.has-error label {
     color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+    theme &&
+    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   &.has-error input,
   &.has-error .wrapper-textarea {
     outline: 2px solid
       ${({ theme }) =>
-        theme &&
-        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+    theme &&
+    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   &.has-error input,
   &.has-error textarea {
     caret-color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+    theme &&
+    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   .error--msg {
     color: ${({ theme }) =>
-      theme &&
-      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+    theme &&
+    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 `;
 
@@ -278,11 +278,9 @@ export const Field = forwardRef(
     return (
       <>
         <TextFieldWrapper
-          className={`${isFocused || floatLabelAlways ? "focused" : ""} ${
-            floatLabel ? "float-label" : ""
-          } ${currentVal ? "filled" : ""} ${
-            placeholder ? "has-placeholder" : " "
-          } ${prefix ? "has-prefix" : ""} 
+          className={`${isFocused || floatLabelAlways ? "focused" : ""} ${floatLabel ? "float-label" : ""
+            } ${currentVal ? "filled" : ""} ${placeholder ? "has-placeholder" : " "
+            } ${prefix ? "has-prefix" : ""} 
           ${className ? className : ""} ${fieldErrors ? "has-error" : ""}`}
           fieldStyle={fieldStyle}
           {...props}

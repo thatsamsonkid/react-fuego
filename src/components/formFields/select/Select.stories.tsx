@@ -4,7 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { Select } from "./Select";
 
 export default {
-  title: "Components/Select",
+  title: "Components/Form Fields/Select",
   component: Select,
   argTypes: {
     // backgroundColor: { control: "color" },
@@ -18,17 +18,17 @@ const options = [
   { value: "vanilla", label: "Vanilla" },
 ];
 
-export const Primary = Template.bind({});
-Primary.args = {
+export const Default = Template.bind({});
+Default.args = {
   options: options,
 };
 
-export const Secondary = Template.bind({});
-Secondary.args = {
-  options: options,
-};
+// export const Secondary = Template.bind({});
+// Secondary.args = {
+//   options: options,
+// };
 
-export const Tertiary = Template.bind({});
-Tertiary.args = {
-  options: options,
-};
+// export const Tertiary = Template.bind({});
+// Tertiary.args = {
+//   options: options,
+// };

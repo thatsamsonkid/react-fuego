@@ -1,17 +1,24 @@
 import React from "react";
 
-const Tab = ({
-  onTabClick = (label) => {},
+export interface ITab {
+  children?: any;
+  onTabClick?: any;
+  label: string;
+  className?: string;
+  activeTab?: string;
+}
+
+export const Tab = ({
+  onTabClick,
   label = "",
   className = "",
   activeTab = "",
   children,
-}) => {
+}: ITab) => {
   return (
     <li
-      className={`sm-tab ${className} ${
-        activeTab === label ? "sm-tab--active" : ""
-      }`}
+      className={`sm-tab ${className} ${activeTab === label ? "sm-tab--active" : ""
+        }`}
       onClick={() => onTabClick(label)}
     >
       <span>{label}</span>
@@ -19,4 +26,3 @@ const Tab = ({
   );
 };
 
-export default Tab;

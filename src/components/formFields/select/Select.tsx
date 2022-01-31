@@ -1,7 +1,7 @@
 import React from "react";
 import Selectr from "react-select";
 import { ThemeLevel, ThemeValue } from "../../../models/themeModel";
-import { FieldStyle } from "../FieldModels";
+import { FieldStyle } from "../field/FieldModels";
 import { useTheme } from "styled-components";
 
 // (provided, state)
@@ -108,26 +108,6 @@ function getDefaultStyle(theme: any) {
   };
 }
 
-// const defaultStyle = {
-//   control: (provided: any) => ({
-//     ...provided,
-//     border: "1px solid var(--royal-blue);",
-//     borderRadius: "1.4rem",
-//     minHeight: "1.4rem",
-//   }),
-//   valueContainer: (provided: any) => ({
-//     ...provided,
-//     padding: "0px 8px",
-//   }),
-//   indicatorsContainer: () => ({
-//     padding: "0px 8px",
-//   }),
-//   dropdownIndicator: () => ({
-//     padding: "0",
-//     color: "var(--seafoam)",
-//   }),
-// };
-
 const noOutline = {
   // ...defaultStyle,
   control: (provided: any) => ({
@@ -154,6 +134,7 @@ export const Select = ({
   ...props
 }: ISelect) => {
   const theme = useTheme();
+
   function getSelectStyle(theme: any) {
     switch (theme) {
       case "invisible":
@@ -164,8 +145,9 @@ export const Select = ({
         return getDefaultStyle(theme);
     }
   }
-  console.log(theme);
+
   const selectStyle = getSelectStyle(theme);
+
   return (
     <Selectr
       styles={selectStyle}

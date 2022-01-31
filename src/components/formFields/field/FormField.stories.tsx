@@ -5,7 +5,7 @@ import { Field } from "./Field";
 import { useForm } from "react-hook-form";
 
 export default {
-  title: "Components/Form Fields",
+  title: "Components/Form Fields/Text Fields",
   component: Field,
   argTypes: {
     // backgroundColor: { control: "color" },
