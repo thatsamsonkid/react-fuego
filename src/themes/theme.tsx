@@ -109,6 +109,10 @@ export const darkTheme = {
   },
   formField: {
     style: "",
+    bg: "#212121",
+    fg: "#fff",
+    hbg: "#484848",
+    hfg: "#fff",
     labelfg: "",
     labelbg: "",
     inputbg: "",

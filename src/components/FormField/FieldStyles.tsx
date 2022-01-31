@@ -1,6 +1,7 @@
 import { css } from "styled-components";
 import { themeOrDefault } from "../../utils/theme-utils";
 
+export type FieldStyle = "default" | "outline" | "invisible";
 export const outFieldFloat = css`
   label {
     top: 2.3rem;
