@@ -1,38 +1,47 @@
-import React from "react";
+import React, { forwardRef, useMemo, useState } from "react";
 import { Field } from "../field/Field";
 
-// interface
+interface IListbox {
+  id?: string;
+  label: string;
+  children?: any;
+  autocomplete?: any;
+}
 
-const Listbox = () => {
+const generateFieldKey = (() => {
+  let count = 0;
+  return () => `Listbox-${++count}`;
+})();
+
+const Listbox = forwardRef(({ label = "", children = null, autocomplete = false }: IListbox,
+  ref: any) => {
+  const id = useMemo(generateFieldKey, []);
+  const labelId = `${id}-label`;
+  const listId = `${id}-list`;
+
+  const [expanded, setexpanded] = useState(false);
+  const [suggestions, setSuggestions] = useState([{ label: "Cool", value: "cool" }, { label: "Dropdown", value: "dropdown" }, { label: "Bro", value: "bro" }]);
+
+  // Have an option for static options and also a function to pass and format suggestions
   return (
-    <div>
-      <Field></Field>
-
-      {/* 
-<label for="ex1-input"
-       id="ex1-label"
-       class="combobox-label">
-  Choice 1 Fruit or Vegetable
-</label>
-<div class="combobox-wrapper">
-  <div role="combobox"
-       aria-expanded="false"
-       aria-owns="ex1-listbox"
-       aria-haspopup="listbox"
-       id="ex1-combobox">
-    <input type="text"
-           aria-autocomplete="list"
-           aria-controls="ex1-listbox"
-           id="ex1-input">
-  </div>
-  <ul aria-labelledby="ex1-label"
-      role="listbox"
-      id="ex1-listbox"
-      class="listbox hidden">
-  </ul>
-</div> */}
+    <div role="combobox"
+      aria-expanded={expanded}
+      aria-owns={listId}
+      aria-haspopup="listbox"
+      id={id}>
+      <Field ref={ref} id={id} labelId={labelId} floatLabel={false}>{label}</Field>
+      <div className="combobox-wrapper">
+        <ul aria-labelledby={labelId}
+          role="listbox"
+          id={listId}
+          className="listbox">
+          {suggestions.map(({ label, value }) => {
+            return <li onClick={() => console.log({ label, value })}>{label}</li>
+          })}
+        </ul>
+      </div>
     </div>
   );
-};
+});
 
 export default Listbox;

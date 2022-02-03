@@ -178,6 +178,8 @@ const generateFieldKey = (() => {
 })();
 
 export interface FieldProps {
+  id?: string;
+  labelId?: string;
   name?: any;
   value?: any;
   floatLabel?: boolean;
@@ -202,7 +204,7 @@ export interface FieldProps {
 
 export const Field = forwardRef(
   (
-    {
+    { id,
       name,
       value,
       floatLabel,
@@ -221,11 +223,19 @@ export const Field = forwardRef(
       fieldErrors,
       required,
       fieldStyle,
+      labelId = "",
       ...props
     }: FieldProps,
     ref: any
   ) => {
-    const id = useMemo(generateFieldKey, []);
+
+    let fieldId = useMemo(generateFieldKey, []);
+    if (id) {
+      fieldId = `${id}-${fieldId}`;
+    }
+
+    console.log(props.autocomplete)
+
     const [currentVal, setCurrentVal] = useState(value);
     const [isFocused, setFocus] = useState(false);
     const onBlurHandler = (e: any) => {
@@ -242,9 +252,9 @@ export const Field = forwardRef(
       setCurrentVal(e.target.value);
     };
 
-    useEffect(() => {
-      console.log(fieldErrors);
-    }, [fieldErrors]);
+    // useEffect(() => {
+    //   console.log(fieldErrors);
+    // }, [fieldErrors]);
 
     const field =
       type === "textarea" ? (
@@ -270,7 +280,8 @@ export const Field = forwardRef(
           placeholder={placeholder}
           type={type}
           ref={ref}
-          id={id}
+          id={fieldId}
+          autocomplete={props.autocomplete ? "on" : "off"}
           {...props}
         />
       );
@@ -287,7 +298,7 @@ export const Field = forwardRef(
         >
           <FieldFix type="prefix">{prefix}</FieldFix>
           {field}
-          <label htmlFor={id}>
+          <label id={labelId} htmlFor={fieldId}>
             {children}
             {required && <span className="required">*</span>}
           </label>
