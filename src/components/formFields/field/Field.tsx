@@ -30,6 +30,11 @@ const TextFieldWrapper = styled.div<FieldProps>`
     background: transparent;
   }
 
+  &.focused,
+  &.focused input {
+    z-index: 2;
+  }
+
   &.focused label,
   &.focused.filled label,
   &.float-label.filled label {
@@ -122,8 +127,8 @@ const TextFieldWrapper = styled.div<FieldProps>`
 
     .required {
       color: ${({ theme }) =>
-    theme &&
-    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+        theme &&
+        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
     }
   }
 
@@ -132,29 +137,29 @@ const TextFieldWrapper = styled.div<FieldProps>`
   // Error Theme
   &.has-error label {
     color: ${({ theme }) =>
-    theme &&
-    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+      theme &&
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   &.has-error input,
   &.has-error .wrapper-textarea {
     outline: 2px solid
       ${({ theme }) =>
-    theme &&
-    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+        theme &&
+        themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   &.has-error input,
   &.has-error textarea {
     caret-color: ${({ theme }) =>
-    theme &&
-    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+      theme &&
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
   .error--msg {
     color: ${({ theme }) =>
-    theme &&
-    themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
+      theme &&
+      themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 `;
 
@@ -199,12 +204,16 @@ export interface FieldProps {
   required?: boolean;
   fieldErrors?: any;
   autocomplete?: any;
+  onKeyDown?: any;
+  onKeyUp?: any;
   fieldStyle?: "inFieldFloat" | "outlineFloat" | "outsideFloat";
+  activedescendant?: string | null;
 }
 
 export const Field = forwardRef(
   (
-    { id,
+    {
+      id,
       name,
       value,
       floatLabel,
@@ -219,22 +228,22 @@ export const Field = forwardRef(
       onChange,
       onFocus,
       onClick,
+      onKeyDown,
+      onKeyUp,
       errorLabel,
       fieldErrors,
       required,
       fieldStyle,
       labelId = "",
+      activedescendant = "",
       ...props
     }: FieldProps,
     ref: any
   ) => {
-
     let fieldId = useMemo(generateFieldKey, []);
     if (id) {
       fieldId = `${id}-${fieldId}`;
     }
-
-    console.log(props.autocomplete)
 
     const [currentVal, setCurrentVal] = useState(value);
     const [isFocused, setFocus] = useState(false);
@@ -250,6 +259,14 @@ export const Field = forwardRef(
     const onChangeHandler = (e: any) => {
       onChange && onChange(e);
       setCurrentVal(e.target.value);
+    };
+
+    const onKeyUpHandler = (e: any) => {
+      onKeyUp && onKeyUp(e);
+    };
+
+    const onKeyDownHandler = (e: any) => {
+      onKeyDown && onKeyDown(e);
     };
 
     // useEffect(() => {
@@ -277,11 +294,14 @@ export const Field = forwardRef(
           onChange={onChangeHandler}
           onBlur={onBlurHandler}
           onFocus={onFocusHandler}
+          onKeyDown={onKeyDownHandler}
+          onKeyUp={onKeyUpHandler}
           placeholder={placeholder}
           type={type}
           ref={ref}
           id={fieldId}
           autocomplete={props.autocomplete ? "on" : "off"}
+          aria-activedescendant={activedescendant}
           {...props}
         />
       );
@@ -289,9 +309,11 @@ export const Field = forwardRef(
     return (
       <>
         <TextFieldWrapper
-          className={`${isFocused || floatLabelAlways ? "focused" : ""} ${floatLabel ? "float-label" : ""
-            } ${currentVal ? "filled" : ""} ${placeholder ? "has-placeholder" : " "
-            } ${prefix ? "has-prefix" : ""} 
+          className={`${isFocused || floatLabelAlways ? "focused" : ""} ${
+            floatLabel ? "float-label" : ""
+          } ${currentVal ? "filled" : ""} ${
+            placeholder ? "has-placeholder" : " "
+          } ${prefix ? "has-prefix" : ""} 
           ${className ? className : ""} ${fieldErrors ? "has-error" : ""}`}
           fieldStyle={fieldStyle}
           {...props}
