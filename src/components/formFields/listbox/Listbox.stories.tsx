@@ -5,45 +5,46 @@ import Listbox from "./Listbox";
 import { useForm } from "react-hook-form";
 
 export default {
-    title: "Components/Form Fields/Listbox",
-    component: Listbox,
-    argTypes: {
-        // backgroundColor: { control: "color" },
-    },
+  title: "Components/Form Fields/Listbox",
+  component: Listbox,
+  argTypes: {
+    // backgroundColor: { control: "color" },
+  },
 } as ComponentMeta<typeof Listbox>;
 
 const Template: ComponentStory<typeof Listbox> = (args) => {
-    const {
-        register,
-        handleSubmit,
-        getValues,
-        formState: { isDirty, isValid, errors },
-    } = useForm({
-        mode: "onChange",
-        reValidateMode: "onChange",
-        defaultValues: {
-            name: "",
-        },
-    });
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { isDirty, isValid, errors },
+  } = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: {
+      name: "",
+    },
+  });
 
-    return (
-        <div className="container">
-            <div className="row">
-                <div className="col">
-                    <form>
-                        <Listbox label="control-1">
-
-                        </Listbox>
-                    </form>
-                </div>
-            </div>
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col">
+          <form>
+            <Listbox label="control-1"></Listbox>
+          </form>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export const Default = Template.bind({});
 Default.args = {
-    name: "name",
-    floatLabel: true,
-    autocomplete: "off",
+  name: "name",
+  suggestions: [
+    { label: "Cool", value: "cool" },
+    { label: "Dropdown", value: "dropdown" },
+    { label: "Bro", value: "bro" },
+  ],
 };

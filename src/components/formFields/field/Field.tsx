@@ -3,6 +3,7 @@ import { FieldFix } from "./Field-Fix";
 import styled from "styled-components";
 import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
 import { themeOrDefault } from "../../../utils/theme-utils";
+import { classnames } from "../../../utils/component-utils";
 
 const TextFieldWrapper = styled.div<FieldProps>`
   position: relative;
@@ -28,6 +29,10 @@ const TextFieldWrapper = styled.div<FieldProps>`
   &.has-placeholder label {
     opacity: 1 !important;
     background: transparent;
+  }
+
+  &.filled label {
+    opacity: 0;
   }
 
   &.focused,
@@ -207,7 +212,6 @@ export interface FieldProps {
   onKeyDown?: any;
   onKeyUp?: any;
   fieldStyle?: "inFieldFloat" | "outlineFloat" | "outsideFloat";
-  activedescendant?: string | null;
 }
 
 export const Field = forwardRef(
@@ -235,7 +239,6 @@ export const Field = forwardRef(
       required,
       fieldStyle,
       labelId = "",
-      activedescendant = "",
       ...props
     }: FieldProps,
     ref: any
@@ -245,8 +248,12 @@ export const Field = forwardRef(
       fieldId = `${id}-${fieldId}`;
     }
 
-    const [currentVal, setCurrentVal] = useState(value);
     const [isFocused, setFocus] = useState(false);
+
+    const onChangeHandler = (e: any) => onChange && onChange(e);
+    const onKeyUpHandler = (e: any) => onKeyUp && onKeyUp(e);
+    const onKeyDownHandler = (e: any) => onKeyDown && onKeyDown(e);
+
     const onBlurHandler = (e: any) => {
       setFocus(false);
       onBlur && onBlur(e);
@@ -255,23 +262,6 @@ export const Field = forwardRef(
       setFocus(true);
       onFocus && onFocus(e);
     };
-
-    const onChangeHandler = (e: any) => {
-      onChange && onChange(e);
-      setCurrentVal(e.target.value);
-    };
-
-    const onKeyUpHandler = (e: any) => {
-      onKeyUp && onKeyUp(e);
-    };
-
-    const onKeyDownHandler = (e: any) => {
-      onKeyDown && onKeyDown(e);
-    };
-
-    // useEffect(() => {
-    //   console.log(fieldErrors);
-    // }, [fieldErrors]);
 
     const field =
       type === "textarea" ? (
@@ -301,20 +291,26 @@ export const Field = forwardRef(
           ref={ref}
           id={fieldId}
           autocomplete={props.autocomplete ? "on" : "off"}
-          aria-activedescendant={activedescendant}
           {...props}
         />
       );
 
+    const textFieldClasses = classnames(
+      {
+        focused: isFocused || floatLabelAlways,
+        "float-label": floatLabel,
+        filled: ref && ref.current.value && ref.current.value.length > 0,
+        "has-placeholder": placeholder,
+        "has-prefix": prefix,
+        "has-error": fieldErrors,
+      },
+      className
+    );
+
     return (
       <>
         <TextFieldWrapper
-          className={`${isFocused || floatLabelAlways ? "focused" : ""} ${
-            floatLabel ? "float-label" : ""
-          } ${currentVal ? "filled" : ""} ${
-            placeholder ? "has-placeholder" : " "
-          } ${prefix ? "has-prefix" : ""} 
-          ${className ? className : ""} ${fieldErrors ? "has-error" : ""}`}
+          className={textFieldClasses}
           fieldStyle={fieldStyle}
           {...props}
         >

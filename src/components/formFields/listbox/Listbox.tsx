@@ -10,11 +10,14 @@ import React, {
 import { Field } from "../field/Field";
 import styled from "styled-components";
 import { Keys } from "../../../utils/keycodes";
+import { classnames } from "../../../utils/component-utils";
+
 interface IListbox {
   id?: string;
   label: string;
   children?: any;
   autocomplete?: any;
+  options?: Array<any>;
 }
 
 const generateFieldKey = (() => {
@@ -64,7 +67,12 @@ const ListboxWrapper = styled.div`
 
 const Listbox = forwardRef<unknown, any>(
   (
-    { label = "", children = null, autocomplete = false }: IListbox,
+    {
+      label = "",
+      children = null,
+      autocomplete = false,
+      options = [],
+    }: IListbox,
     ref: any
   ) => {
     const id = useMemo(generateFieldKey, []);
@@ -73,22 +81,12 @@ const Listbox = forwardRef<unknown, any>(
 
     const [activeIndex, setActiveIndex] = useState(-1);
     const [expanded, setExpanded] = useState(false);
-    const [suggestions, setSuggestions] = useState([
-      { label: "Cool", value: "cool" },
-      { label: "Dropdown", value: "dropdown" },
-      { label: "Bro", value: "bro" },
-    ]);
+    const [suggestions, setSuggestions] = useState(options);
     const [activedescendant, setActivedescendant] = useState("");
     let suggestionRefs: Array<any> = [];
 
     const fieldRef = useRef<any>();
     useImperativeHandle(ref, () => fieldRef.current);
-
-    // const onButtonClick = (e) => {
-    //   onClick(e);
-    //   // `current` points to the mounted text input element
-    //   fieldRef.current.focus();
-    // };
 
     const showDropdown = () => setExpanded(true);
     const hideDropdown = () => setExpanded(false);
@@ -178,12 +176,12 @@ const Listbox = forwardRef<unknown, any>(
       }
     };
 
-    useEffect(() => {
-      console.log(activeIndex);
-      console.log(suggestionRefs);
-      console.log(fieldRef);
-      console.log(activedescendant);
-    }, [activeIndex, suggestionRefs, fieldRef, activedescendant]);
+    // useEffect(() => {
+    //   console.log(activeIndex);
+    //   console.log(suggestionRefs);
+    //   console.log(fieldRef);
+    //   console.log(activedescendant);
+    // }, [activeIndex, suggestionRefs, fieldRef, activedescendant]);
 
     // Have an option for static options and also a function to pass and format suggestions
     return (
@@ -203,7 +201,7 @@ const Listbox = forwardRef<unknown, any>(
           onBlur={hideDropdown}
           onKeyUp={checkKey}
           onKeyDown={setActiveItem}
-          activedescendant={activedescendant}
+          aria-activedescendant={activedescendant}
         >
           {label}
         </Field>
@@ -214,7 +212,7 @@ const Listbox = forwardRef<unknown, any>(
                 <li
                   id={`suggestion-${index}`}
                   ref={(el) => suggestionRefs.push(el)}
-                  className={`${activeIndex === index ? "focused" : ""}`}
+                  className={classnames({ focused: activeIndex === index })}
                   aria-selected={activeIndex === index}
                   onClick={() => console.log({ label, value })}
                 >
