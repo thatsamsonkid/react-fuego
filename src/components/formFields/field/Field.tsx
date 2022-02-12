@@ -290,7 +290,7 @@ export const Field = forwardRef(
           type={type}
           ref={ref}
           id={fieldId}
-          autocomplete={props.autocomplete ? "on" : "off"}
+          autoComplete={props.autocomplete ? "on" : "off"}
           {...props}
         />
       );
@@ -299,7 +299,11 @@ export const Field = forwardRef(
       {
         focused: isFocused || floatLabelAlways,
         "float-label": floatLabel,
-        filled: ref && ref.current.value && ref.current.value.length > 0,
+        filled:
+          ref &&
+          ref.current &&
+          ref.current.value &&
+          ref.current.value.length > 0,
         "has-placeholder": placeholder,
         "has-prefix": prefix,
         "has-error": fieldErrors,

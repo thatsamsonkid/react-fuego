@@ -31,7 +31,7 @@ const Template: ComponentStory<typeof Listbox> = (args) => {
       <div className="row">
         <div className="col">
           <form>
-            <Listbox label="control-1"></Listbox>
+            <Listbox label="control-1" {...args}></Listbox>
           </form>
         </div>
       </div>
@@ -42,9 +42,20 @@ const Template: ComponentStory<typeof Listbox> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   name: "name",
-  suggestions: [
-    { label: "Cool", value: "cool" },
-    { label: "Dropdown", value: "dropdown" },
-    { label: "Bro", value: "bro" },
+  options: [
+    { id: 1, label: "Cool", value: "cool" },
+    { id: 2, label: "Dropdown", value: "dropdown" },
+    { id: 3, label: "Bro", value: "bro" },
+  ],
+};
+
+export const Loading = Template.bind({});
+Loading.args = {
+  name: "name",
+  loading: true,
+  options: [
+    { id: 1, label: "Cool", value: "cool" },
+    { id: 2, label: "Dropdown", value: "dropdown" },
+    { id: 3, label: "Bro", value: "bro" },
   ],
 };

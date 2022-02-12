@@ -18,6 +18,8 @@ interface IListbox {
   children?: any;
   autocomplete?: any;
   options?: Array<any>;
+  loading?: boolean;
+  loadingTemplate?: any;
 }
 
 const generateFieldKey = (() => {
@@ -44,9 +46,20 @@ const ListboxWrapper = styled.div`
       padding: 0;
       margin: 0;
 
+      &.loader {
+        li {
+          &:hover,
+          &.focused {
+            background-color: #121212;
+          }
+        }
+      }
+
       li {
         padding: 0.8rem 1rem;
         color: white;
+        background-color: #121212;
+
         &:hover,
         &.focused {
           background-color: #212121;
@@ -72,6 +85,8 @@ const Listbox = forwardRef<unknown, any>(
       children = null,
       autocomplete = false,
       options = [],
+      loading = false,
+      loadingTemplate = null,
     }: IListbox,
     ref: any
   ) => {
@@ -85,6 +100,12 @@ const Listbox = forwardRef<unknown, any>(
     const [activedescendant, setActivedescendant] = useState("");
     let suggestionRefs: Array<any> = [];
 
+    const defaultLoader = (
+      <ul className="loader">
+        <li>...Loading</li>
+      </ul>
+    );
+    const loader = loadingTemplate ? loadingTemplate : defaultLoader;
     const fieldRef = useRef<any>();
     useImperativeHandle(ref, () => fieldRef.current);
 
@@ -206,21 +227,26 @@ const Listbox = forwardRef<unknown, any>(
           {label}
         </Field>
         <div className={`combobox-wrapper ${expanded ? "" : "hidden"}`}>
-          <ul aria-labelledby={labelId} role="listbox" id={listId}>
-            {suggestions.map(({ label, value }, index) => {
-              return (
-                <li
-                  id={`suggestion-${index}`}
-                  ref={(el) => suggestionRefs.push(el)}
-                  className={classnames({ focused: activeIndex === index })}
-                  aria-selected={activeIndex === index}
-                  onClick={() => console.log({ label, value })}
-                >
-                  {label}
-                </li>
-              );
-            })}
-          </ul>
+          {loading ? (
+            loader
+          ) : (
+            <ul aria-labelledby={labelId} role="listbox" id={listId}>
+              {suggestions.map(({ id, label, value }, index) => {
+                return (
+                  <li
+                    id={`suggestion-${index}`}
+                    key={id}
+                    ref={(el) => suggestionRefs.push(el)}
+                    className={classnames({ focused: activeIndex === index })}
+                    aria-selected={activeIndex === index}
+                    onClick={() => console.log({ label, value })}
+                  >
+                    {label}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </ListboxWrapper>
     );
