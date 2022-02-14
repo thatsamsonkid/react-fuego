@@ -47,6 +47,7 @@ Default.args = {
     { id: 2, label: "Dropdown", value: "dropdown" },
     { id: 3, label: "Bro", value: "bro" },
   ],
+  onSelection: (e) => console.log(e),
 };
 
 export const Loading = Template.bind({});

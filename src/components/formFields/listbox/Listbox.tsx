@@ -6,6 +6,7 @@ import React, {
   useRef,
   useEffect,
   useImperativeHandle,
+  SyntheticEvent,
 } from "react";
 import { Field } from "../field/Field";
 import styled from "styled-components";
@@ -20,6 +21,7 @@ interface IListbox {
   options?: Array<any>;
   loading?: boolean;
   loadingTemplate?: any;
+  onSelection?: any;
 }
 
 const generateFieldKey = (() => {
@@ -87,6 +89,7 @@ const Listbox = forwardRef<unknown, any>(
       options = [],
       loading = false,
       loadingTemplate = null,
+      onSelection,
     }: IListbox,
     ref: any
   ) => {
@@ -106,14 +109,26 @@ const Listbox = forwardRef<unknown, any>(
       </ul>
     );
     const loader = loadingTemplate ? loadingTemplate : defaultLoader;
+    const listboxRef = useRef<any>();
     const fieldRef = useRef<any>();
     useImperativeHandle(ref, () => fieldRef.current);
 
     const showDropdown = () => setExpanded(true);
-    const hideDropdown = () => setExpanded(false);
-    const selectItem = (item: any) => {
-      if (item) {
-        ref.value = item.innerText;
+    const hideDropdown = () => {
+      // Gives time for click events for selections to propogate
+      setTimeout(() => setExpanded(false), 200);
+    };
+
+    const onChangeHandler = (e: Event) => !expanded && setExpanded(true);
+
+    const onSelectionHandler = (e: SyntheticEvent, selection: any) => {
+      fieldRef.current.value = selection.label;
+      onSelection && onSelection(selection);
+    };
+
+    const selectItem = (selection: any) => {
+      if (selection) {
+        fieldRef.current.value = selection.label;
         hideDropdown();
       }
     };
@@ -126,19 +141,17 @@ const Listbox = forwardRef<unknown, any>(
       selectItem(activeItem);
     };
 
-    const getItemAt = (index: number) => suggestionRefs[index];
+    const getItemAt = (index: number) => suggestions[index];
 
     const setActiveItem = (evt: KeyboardEvent) => {
       var key = evt.key;
 
       if (key === Keys.ESC) {
         hideDropdown();
-        setTimeout(function () {
-          // TODO: Need to get field ref and clear input
+        setTimeout(() => {
           // On Firefox, input does not get cleared here unless wrapped in
           // a setTimeout
-          console.log(ref);
-          // input.value = "";
+          fieldRef.current.value = "";
         }, 1);
         return;
       }
@@ -160,6 +173,7 @@ const Listbox = forwardRef<unknown, any>(
           }
           break;
         case Keys.ENTER:
+          evt.preventDefault();
           activeItem = getItemAt(activeIndex);
           selectItem(activeItem);
           return;
@@ -193,9 +207,30 @@ const Listbox = forwardRef<unknown, any>(
           evt.preventDefault();
           return;
         default:
-        // this.updateResults(false);
+          return;
       }
     };
+
+    const listRender = loading ? (
+      loader
+    ) : (
+      <ul aria-labelledby={labelId} role="listbox" id={listId}>
+        {suggestions.map(({ id, label, value }, index) => {
+          return (
+            <li
+              id={`suggestion-${index}`}
+              key={id}
+              ref={(el) => suggestionRefs.push(el)}
+              className={classnames({ focused: activeIndex === index })}
+              aria-selected={activeIndex === index}
+              onClick={(e) => onSelectionHandler(e, { label, value })}
+            >
+              {label}
+            </li>
+          );
+        })}
+      </ul>
+    );
 
     // useEffect(() => {
     //   console.log(activeIndex);
@@ -207,6 +242,7 @@ const Listbox = forwardRef<unknown, any>(
     // Have an option for static options and also a function to pass and format suggestions
     return (
       <ListboxWrapper
+        ref={listboxRef}
         role="combobox"
         aria-expanded={expanded}
         aria-owns={listId}
@@ -222,31 +258,13 @@ const Listbox = forwardRef<unknown, any>(
           onBlur={hideDropdown}
           onKeyUp={checkKey}
           onKeyDown={setActiveItem}
+          onChange={onChangeHandler}
           aria-activedescendant={activedescendant}
         >
           {label}
         </Field>
         <div className={`combobox-wrapper ${expanded ? "" : "hidden"}`}>
-          {loading ? (
-            loader
-          ) : (
-            <ul aria-labelledby={labelId} role="listbox" id={listId}>
-              {suggestions.map(({ id, label, value }, index) => {
-                return (
-                  <li
-                    id={`suggestion-${index}`}
-                    key={id}
-                    ref={(el) => suggestionRefs.push(el)}
-                    className={classnames({ focused: activeIndex === index })}
-                    aria-selected={activeIndex === index}
-                    onClick={() => console.log({ label, value })}
-                  >
-                    {label}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          {listRender}
         </div>
       </ListboxWrapper>
     );
