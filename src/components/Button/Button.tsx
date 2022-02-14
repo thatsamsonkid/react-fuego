@@ -80,7 +80,7 @@ export const Button = forwardRef(
     ref
   ) => {
     const buttonContent = loading ? loader : children;
-    console.log(props);
+
     return (
       <ButtonWrapper
         as={props.href ? "a" : "button"}
