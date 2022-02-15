@@ -21,7 +21,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "declaration": true,
-    "declarationDir": "."
+    "declarationDir": ".",
+    "importHelpers": true,
   },
   "include": [
     "src",

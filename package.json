@@ -98,6 +98,7 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.1",
     "styled-components": "^5.3.3",
-    "themeprovider-storybook": "^1.8.0"
+    "themeprovider-storybook": "^1.8.0",
+    "tslib": "^2.3.1"
   }
 }
