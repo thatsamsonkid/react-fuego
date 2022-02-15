@@ -80,7 +80,7 @@ const ListboxWrapper = styled.div`
   }
 `;
 
-const Listbox = forwardRef<unknown, any>(
+export const Listbox = forwardRef<unknown, any>(
   (
     {
       label = "",
@@ -270,5 +270,3 @@ const Listbox = forwardRef<unknown, any>(
     );
   }
 );
-
-export default Listbox;
