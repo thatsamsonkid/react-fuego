@@ -122,9 +122,7 @@ export const Listbox = forwardRef<unknown, any>(
     };
 
     const onChangeHandler = (e: Event) => {
-      console.log("chsnge");
       !expanded && setExpanded(true);
-      console.log(onChange);
       onChange && onChange();
     };
 
