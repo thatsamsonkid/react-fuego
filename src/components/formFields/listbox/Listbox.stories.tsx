@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import Listbox from "./Listbox";
+import { Listbox } from "./Listbox";
 import { useForm } from "react-hook-form";
 
 export default {
@@ -48,6 +48,7 @@ Default.args = {
     { id: 3, label: "Bro", value: "bro" },
   ],
   onSelection: (e) => console.log(e),
+  onChange: () => console.log("woo"),
 };
 
 export const Loading = Template.bind({});

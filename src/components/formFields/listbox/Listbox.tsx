@@ -22,6 +22,7 @@ interface IListbox {
   loading?: boolean;
   loadingTemplate?: any;
   onSelection?: any;
+  onChange?: any;
 }
 
 const generateFieldKey = (() => {
@@ -90,6 +91,7 @@ export const Listbox = forwardRef<unknown, any>(
       loading = false,
       loadingTemplate = null,
       onSelection,
+      onChange,
     }: IListbox,
     ref: any
   ) => {
@@ -119,7 +121,12 @@ export const Listbox = forwardRef<unknown, any>(
       setTimeout(() => setExpanded(false), 200);
     };
 
-    const onChangeHandler = (e: Event) => !expanded && setExpanded(true);
+    const onChangeHandler = (e: Event) => {
+      console.log("chsnge");
+      !expanded && setExpanded(true);
+      console.log(onChange);
+      onChange && onChange();
+    };
 
     const onSelectionHandler = (e: SyntheticEvent, selection: any) => {
       fieldRef.current.value = selection.label;
