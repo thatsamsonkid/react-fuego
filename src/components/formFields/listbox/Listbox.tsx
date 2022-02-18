@@ -240,6 +240,9 @@ export const Listbox = forwardRef<unknown, any>(
       </ul>
     );
 
+    useEffect(() => {
+      setSuggestions(options);
+    }, [options]);
     // useEffect(() => {
     //   console.log(activeIndex);
     //   console.log(suggestionRefs);
