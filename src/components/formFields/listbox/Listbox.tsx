@@ -12,6 +12,7 @@ import { Field } from "../field/Field";
 import styled from "styled-components";
 import { Keys } from "../../../utils/keycodes";
 import { classnames } from "../../../utils/component-utils";
+import { useUID, useUIDSeed } from "react-uid";
 
 interface IListbox {
   id?: string;
@@ -25,10 +26,10 @@ interface IListbox {
   onChange?: any;
 }
 
-const generateFieldKey = (() => {
-  let count = 0;
-  return () => `Listbox-${++count}`;
-})();
+// const generateFieldKey = (() => {
+//   let count = 0;
+//   return () => `Listbox-${++count}`;
+// })();
 
 const ListboxWrapper = styled.div`
   .combobox-wrapper {
@@ -95,7 +96,9 @@ export const Listbox = forwardRef<unknown, any>(
     }: IListbox,
     ref: any
   ) => {
-    const id = useMemo(generateFieldKey, []);
+    const seed = useUIDSeed();
+    let id = `${seed("Listbox")}`;
+
     const labelId = `${id}-label`;
     const listId = `${id}-list`;
 

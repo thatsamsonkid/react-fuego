@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
 import { themeOrDefault } from "../../../utils/theme-utils";
 import { classnames } from "../../../utils/component-utils";
+import { useUID, useUIDSeed } from "react-uid";
 
 const TextFieldWrapper = styled.div<FieldProps>`
   position: relative;
@@ -243,9 +244,10 @@ export const Field = forwardRef(
     }: FieldProps,
     ref: any
   ) => {
-    let fieldId = useMemo(generateFieldKey, []);
+    let fieldId = useUID();
+    const seed = useUIDSeed();
     if (id) {
-      fieldId = `${id}-${fieldId}`;
+      fieldId = `${id}-${seed(fieldId)}`;
     }
 
     const [isFocused, setFocus] = useState(false);
