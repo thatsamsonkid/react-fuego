@@ -218,7 +218,7 @@ export interface FieldProps {
 export const Field = forwardRef(
   (
     {
-      id,
+      id = "field",
       name,
       value,
       floatLabel,
@@ -244,11 +244,8 @@ export const Field = forwardRef(
     }: FieldProps,
     ref: any
   ) => {
-    let fieldId = useUID();
     const seed = useUIDSeed();
-    if (id) {
-      fieldId = seed(`${id}-${fieldId}`);
-    }
+    let fieldId = seed(id);
 
     const [isFocused, setFocus] = useState(false);
 
