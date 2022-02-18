@@ -1,7 +1,6 @@
 import React, {
   forwardRef,
   KeyboardEvent,
-  useMemo,
   useState,
   useRef,
   useEffect,
@@ -12,7 +11,7 @@ import { Field } from "../field/Field";
 import styled from "styled-components";
 import { Keys } from "../../../utils/keycodes";
 import { classnames } from "../../../utils/component-utils";
-import { useUID, useUIDSeed } from "react-uid";
+import { useUIDSeed } from "react-uid";
 
 interface IListbox {
   id?: string;
@@ -26,18 +25,17 @@ interface IListbox {
   onChange?: any;
 }
 
-// const generateFieldKey = (() => {
-//   let count = 0;
-//   return () => `Listbox-${++count}`;
-// })();
-
 const ListboxWrapper = styled.div`
+  position: relative;
   .combobox-wrapper {
-    position: relative;
-    top: -5.4rem;
+    border-radius: 7px;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    position: absolute;
+    top: 2.6rem;
+    width: 100%;
     border: 1px solid #212121;
     border-top: none;
-    border-radius: 7px;
     z-index: 1;
     padding-top: 2rem;
 
@@ -121,7 +119,7 @@ export const Listbox = forwardRef<unknown, any>(
     const showDropdown = () => setExpanded(true);
     const hideDropdown = () => {
       // Gives time for click events for selections to propogate
-      setTimeout(() => setExpanded(false), 200);
+      setTimeout(() => setExpanded(false), 100);
     };
 
     const onChangeHandler = (e: Event) => {
