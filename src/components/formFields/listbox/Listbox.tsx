@@ -117,10 +117,11 @@ export const Listbox = forwardRef<unknown, any>(
     useImperativeHandle(ref, () => fieldRef.current);
 
     const showDropdown = () => setExpanded(true);
-    const hideDropdown = (delay?: number) => {
-      // Gives time for click events for selections to propogate
+    const hideDropdown = () => setExpanded(false);
 
-      setTimeout(() => setExpanded(false), delay || 0);
+    const delayedHideDropdown = () => {
+      // Gives time for click events for selections to propogate
+      setTimeout(() => setExpanded(false), 200);
     };
 
     const onChangeHandler = (e: Event) => {
@@ -136,7 +137,7 @@ export const Listbox = forwardRef<unknown, any>(
     const selectItem = (selection: any) => {
       if (selection) {
         fieldRef.current.value = selection.label;
-        hideDropdown(200);
+        delayedHideDropdown();
       }
     };
 
