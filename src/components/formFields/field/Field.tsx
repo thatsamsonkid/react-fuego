@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo, forwardRef } from "react";
+import { useState, useEffect, forwardRef } from "react";
 import { FieldFix } from "./Field-Fix";
 import styled from "styled-components";
 import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
 import { themeOrDefault } from "../../../utils/theme-utils";
 import { classnames } from "../../../utils/component-utils";
-import { useUID, useUIDSeed } from "react-uid";
+import { useUIDSeed } from "react-uid";
 
 const TextFieldWrapper = styled.div<FieldProps>`
   position: relative;

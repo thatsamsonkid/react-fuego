@@ -126,7 +126,7 @@ export const Listbox = forwardRef<unknown, any>(
 
     const onChangeHandler = (e: Event) => {
       !expanded && setExpanded(true);
-      onChange && onChange();
+      onChange && onChange(e);
     };
 
     const onSelectionHandler = (e: SyntheticEvent, selection: any) => {
