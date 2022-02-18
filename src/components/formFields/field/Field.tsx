@@ -247,7 +247,7 @@ export const Field = forwardRef(
     let fieldId = useUID();
     const seed = useUIDSeed();
     if (id) {
-      fieldId = `${id}-${seed(fieldId)}`;
+      fieldId = seed(`${id}-${fieldId}`);
     }
 
     const [isFocused, setFocus] = useState(false);
