@@ -121,7 +121,7 @@ export const Listbox = forwardRef<unknown, any>(
 
     const delayedHideDropdown = () => {
       // Gives time for click events for selections to propogate
-      setTimeout(() => setExpanded(false), 200);
+      setTimeout(() => setExpanded(false), 10);
     };
 
     const onChangeHandler = (e: Event) => {
@@ -132,6 +132,7 @@ export const Listbox = forwardRef<unknown, any>(
     const onSelectionHandler = (e: SyntheticEvent, selection: any) => {
       fieldRef.current.value = selection.label;
       onSelection && onSelection(selection);
+      delayedHideDropdown();
     };
 
     const selectItem = (selection: any) => {
@@ -266,7 +267,6 @@ export const Listbox = forwardRef<unknown, any>(
           labelId={labelId}
           floatLabel={false}
           onFocus={showDropdown}
-          onBlur={hideDropdown}
           onKeyUp={checkKey}
           onKeyDown={setActiveItem}
           onChange={onChangeHandler}
