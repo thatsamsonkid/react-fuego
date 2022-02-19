@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef } from "react";
+import { useState, forwardRef, BaseSyntheticEvent } from "react";
 import { FieldFix } from "./Field-Fix";
 import styled from "styled-components";
 import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
@@ -12,12 +12,23 @@ const TextFieldWrapper = styled.div<FieldProps>`
   margin: 1rem 0;
   width: 100%;
 
+  .field-contents {
+    padding: 0 1rem;
+    border-radius: 1.4rem;
+    position: relative;
+    padding: 0.5rem 1rem;
+  }
+
   label {
     position: absolute;
     margin: 0;
-    left: 1.4rem;
-    top: 1.5rem;
+    top: 0.7rem;
+    left: 1.2rem;
     font-size: 1.6rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 24px);
     pointer-events: none;
     transform-origin: left top;
     transition: color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
@@ -52,9 +63,10 @@ const TextFieldWrapper = styled.div<FieldProps>`
     border: none;
     width: 100%;
     font-size: 1.6rem;
-    height: 4.4rem;
+    height: 1.4375em;
+    /* height: 4.4rem; */
     font-family: inherit;
-    padding: 0 1.6rem;
+    /* padding: 0 1.6rem; */
   }
 
   textarea {
@@ -73,14 +85,6 @@ const TextFieldWrapper = styled.div<FieldProps>`
     min-height: 4.4rem;
     padding: 1rem 1.7rem;
   }
-
-  /* .no-outline input {
-    border: none;
-  }
-
-  .square input {
-    border-radius: 4px;
-  } */
 
   input:focus,
   textarea:focus {
@@ -123,7 +127,8 @@ const TextFieldWrapper = styled.div<FieldProps>`
   /* Theme */
   input,
   textarea,
-  .wrapper-textarea {
+  .wrapper-textarea,
+  .field-contents {
     background-color: ${({ theme }) => theme.palette.primary.main};
     color: ${({ theme }) => theme.palette.primary.contrastText};
   }
@@ -147,7 +152,7 @@ const TextFieldWrapper = styled.div<FieldProps>`
       themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
-  &.has-error input,
+  &.has-error .field-contents,
   &.has-error .wrapper-textarea {
     outline: 2px solid
       ${({ theme }) =>
@@ -182,11 +187,6 @@ const switchFieldStyle = (fieldStyle: string) => {
       return InFieldFloat;
   }
 };
-
-const generateFieldKey = (() => {
-  let count = 0;
-  return () => `field-control-${++count}`;
-})();
 
 export interface FieldProps {
   id?: string;
@@ -248,8 +248,17 @@ export const Field = forwardRef(
     let fieldId = seed(id);
 
     const [isFocused, setFocus] = useState(false);
+    const [isFilled, setFilled] = useState(false);
 
-    const onChangeHandler = (e: any) => onChange && onChange(e);
+    const onChangeHandler = (e: BaseSyntheticEvent) => {
+      if (e.target && e.target.value && e.target.value.length > 0) {
+        setFilled(true);
+      } else {
+        setFilled(false);
+      }
+      onChange && onChange(e);
+    };
+
     const onKeyUpHandler = (e: any) => onKeyUp && onKeyUp(e);
     const onKeyDownHandler = (e: any) => onKeyDown && onKeyDown(e);
 
@@ -298,11 +307,7 @@ export const Field = forwardRef(
       {
         focused: isFocused || floatLabelAlways,
         "float-label": floatLabel,
-        filled:
-          ref &&
-          ref.current &&
-          ref.current.value &&
-          ref.current.value.length > 0,
+        filled: isFilled,
         "has-placeholder": placeholder,
         "has-prefix": prefix,
         "has-error": fieldErrors,
@@ -318,12 +323,13 @@ export const Field = forwardRef(
           {...props}
         >
           <FieldFix type="prefix">{prefix}</FieldFix>
-          {field}
-          <label id={labelId} htmlFor={fieldId}>
-            {children}
-            {required && <span className="required">*</span>}
-          </label>
-          <div></div>
+          <div className="field-contents">
+            {field}
+            <label id={labelId} htmlFor={fieldId}>
+              {children}
+              {required && <span className="required">*</span>}
+            </label>
+          </div>
           <FieldFix type="suffix">{suffix}</FieldFix>
           <div className="error">
             <span className="error--msg">{errorLabel}</span>

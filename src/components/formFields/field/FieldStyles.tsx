@@ -47,6 +47,16 @@ export const outlineFieldFloat = css`
     padding: 0 0.75rem;
   }
 
+  &.focused .field-contents {
+    outline: 2px solid
+      ${({ theme }) =>
+        theme &&
+        themeOrDefault(
+          theme.formField.focusOutline,
+          theme.palette.primary.contrastText
+        )};
+  }
+
   input {
     background-color: ${({ theme }) => theme.backgroundColor};
     outline: 2px solid
@@ -56,17 +66,6 @@ export const outlineFieldFloat = css`
           theme.formField.outline,
           theme.palette.primary.contrastText
         )};
-
-    &:focus {
-      padding: 0 1.45rem;
-      outline: 2px solid
-        ${({ theme }) =>
-          theme &&
-          themeOrDefault(
-            theme.formField.focusOutline,
-            theme.palette.primary.contrastText
-          )};
-    }
   }
 
   textarea {
@@ -98,8 +97,19 @@ export const outlineFieldFloat = css`
 // Default
 export const InFieldFloat = css`
   label {
-    top: 2.3rem;
-    left: 1.6rem;
+    top: 1.4rem;
+  }
+
+  .field-contents {
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+  }
+
+  &.float-label {
+    .field-contents {
+      padding-top: 1.8rem;
+      padding-bottom: 0.6rem;
+    }
   }
 
   &.float-label.filled label,
@@ -107,23 +117,22 @@ export const InFieldFloat = css`
   &.has-placeholder label {
     transform: translate(0, -0.8rem) scale(0.75);
     opacity: 1 !important;
+    top: 1.2rem;
   }
 
-  &.float-label.filled label,
+  /* &.float-label.filled label,
   &.focused.float-label label {
-    padding-top: 1.5rem;
-  }
+    /* padding-top: 1.5rem;
+  } */
 
   &.filled input,
   &.focused label {
     padding-top: 0;
   }
 
-  input {
-    :focus {
-      outline: 2px solid
-        ${({ theme }) => theme && theme.palette.primary.contrastText};
-    }
+  &.focused .field-contents {
+    outline: 2px solid
+      ${({ theme }) => theme && theme.palette.primary.contrastText};
   }
 
   &.focused .wrapper-textarea {
