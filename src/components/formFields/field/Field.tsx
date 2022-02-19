@@ -64,9 +64,7 @@ const TextFieldWrapper = styled.div<FieldProps>`
     width: 100%;
     font-size: 1.6rem;
     height: 1.4375em;
-    /* height: 4.4rem; */
     font-family: inherit;
-    /* padding: 0 1.6rem; */
   }
 
   textarea {
@@ -78,12 +76,6 @@ const TextFieldWrapper = styled.div<FieldProps>`
     min-height: 4.4rem;
     padding: 0;
     max-height: 10rem;
-  }
-
-  .wrapper-textarea {
-    border-radius: 1.4rem;
-    min-height: 4.4rem;
-    padding: 1rem 1.7rem;
   }
 
   input:focus,
@@ -127,14 +119,20 @@ const TextFieldWrapper = styled.div<FieldProps>`
   /* Theme */
   input,
   textarea,
-  .wrapper-textarea,
   .field-contents {
-    background-color: ${({ theme }) => theme.palette.primary.main};
-    color: ${({ theme }) => theme.palette.primary.contrastText};
+    background-color: ${({ theme }) =>
+      themeOrDefault(theme.formField.bg, theme.palette.primary.main)};
+    color: ${({ theme }) =>
+      themeOrDefault(theme.formField.fg, theme.palette.primary.contrastText)};
   }
 
   label {
-    color: ${({ theme }) => theme.palette.primary.contrastText};
+    color: ${({ theme }) =>
+      theme &&
+      themeOrDefault(
+        theme.formField.labelfg,
+        theme.palette.primary.contrastText
+      )};
 
     .required {
       color: ${({ theme }) =>
@@ -152,8 +150,7 @@ const TextFieldWrapper = styled.div<FieldProps>`
       themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
-  &.has-error .field-contents,
-  &.has-error .wrapper-textarea {
+  &.has-error .field-contents {
     outline: 2px solid
       ${({ theme }) =>
         theme &&
@@ -273,19 +270,17 @@ export const Field = forwardRef(
 
     const field =
       type === "textarea" ? (
-        <div className="wrapper-textarea">
-          <textarea
-            name={name}
-            ref={ref}
-            id={id}
-            cols={30}
-            rows={2}
-            onChange={onChangeHandler}
-            onBlur={onBlurHandler}
-            onFocus={onFocusHandler}
-            {...props}
-          ></textarea>
-        </div>
+        <textarea
+          name={name}
+          ref={ref}
+          id={id}
+          cols={30}
+          rows={2}
+          onChange={onChangeHandler}
+          onBlur={onBlurHandler}
+          onFocus={onFocusHandler}
+          {...props}
+        ></textarea>
       ) : (
         <input
           name={name}
