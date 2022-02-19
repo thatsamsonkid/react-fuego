@@ -5,15 +5,13 @@ import React, {
   useRef,
   useEffect,
   useImperativeHandle,
-  SyntheticEvent,
-  BaseSyntheticEvent,
+  SyntheticEvent
 } from "react";
 import { Field } from "../field/Field";
 import styled from "styled-components";
 import { Keys } from "../../../utils/keycodes";
 import { classnames } from "../../../utils/component-utils";
 import { useUIDSeed } from "react-uid";
-import { useOutsideAlerter } from "../../../hooks/useClickOutside";
 
 interface IListbox {
   id?: string;
@@ -97,27 +95,25 @@ export const Listbox = forwardRef<unknown, any>(
     }: IListbox,
     ref: any
   ) => {
+
     const seed = useUIDSeed();
     let id = `${seed("Listbox")}`;
 
     const labelId = `${id}-label`;
     const listId = `${id}-list`;
 
+    let suggestionRefs: Array<any> = [];
+
     const [activeIndex, setActiveIndex] = useState(-1);
     const [expanded, setExpanded] = useState(false);
     const [suggestions, setSuggestions] = useState(options);
     const [activedescendant, setActivedescendant] = useState("");
-    let suggestionRefs: Array<any> = [];
-
-    const defaultLoader = (
-      <ul className="loader">
-        <li>...Loading</li>
-      </ul>
-    );
-    const loader = loadingTemplate ? loadingTemplate : defaultLoader;
-    const listboxRef = useRef<any>();
-
     const [clickedOutside, setClickedOutside] = useState(false);
+
+    const fieldRef = useRef<any>();
+    useImperativeHandle(ref, () => fieldRef.current);
+
+    const listboxRef = useRef<any>();
 
     const handleClickOutside = (e: any) => {
       if (!listboxRef.current.contains(e.target)) {
@@ -127,35 +123,11 @@ export const Listbox = forwardRef<unknown, any>(
       }
     };
 
-    useEffect(() => {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
-    });
-
-    useEffect(() => {
-      console.log(clickedOutside);
-      if (clickedOutside) {
-        hideDropdown();
-      }
-      return () => {
-        // Unbind the event listener on clean up
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, [clickedOutside]);
-
-    const handleClickInside = () => setClickedOutside(false);
-
-    const fieldRef = useRef<any>();
-    useImperativeHandle(ref, () => fieldRef.current);
-
     const showDropdown = () => setExpanded(true);
     const hideDropdown = () => setExpanded(false);
 
-    const delayedHideDropdown = () => {
-      // Gives time for click events for selections to propogate
-      setTimeout(() => setExpanded(false), 10);
-    };
+    // Gives time for click events for selections to propogate
+    const delayedHideDropdown = () => setTimeout(() => hideDropdown(), 10);
 
     const onChangeHandler = (e: Event) => {
       !expanded && setExpanded(true);
@@ -172,9 +144,8 @@ export const Listbox = forwardRef<unknown, any>(
     const selectItem = (selection: any) => {
       if (selection) {
         fieldRef.current.value = selection.label;
-        fieldRef.current.focus();
         setClickedOutside(false);
-        // delayedHideDropdown();
+        delayedHideDropdown();
       }
     };
 
@@ -185,13 +156,6 @@ export const Listbox = forwardRef<unknown, any>(
       var activeItem = getItemAt(activeIndex);
       selectItem(activeItem);
     };
-
-    // const onBlurHandler = (event: any) => {
-    //   console.log(event);
-    //   if (!event.currentTarget.contains(event.relatedTarget)) {
-    //     hideDropdown();
-    //   }
-    // };
 
     const getItemAt = (index: number) => suggestions[index];
 
@@ -263,6 +227,32 @@ export const Listbox = forwardRef<unknown, any>(
       }
     };
 
+    useEffect(() => setSuggestions(options), [options]);
+
+    useEffect(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    });
+
+    useEffect(() => {
+      if (clickedOutside) {
+        hideDropdown();
+      }
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [clickedOutside]);
+
+    const defaultLoader = (
+      <ul className="loader">
+        <li>...Loading</li>
+      </ul>
+    );
+
+    const loader = loadingTemplate ? loadingTemplate : defaultLoader;
+
     const listRender = loading ? (
       loader
     ) : (
@@ -283,16 +273,6 @@ export const Listbox = forwardRef<unknown, any>(
         })}
       </ul>
     );
-
-    useEffect(() => {
-      setSuggestions(options);
-    }, [options]);
-    // useEffect(() => {
-    //   console.log(activeIndex);
-    //   console.log(suggestionRefs);
-    //   console.log(fieldRef);
-    //   console.log(activedescendant);
-    // }, [activeIndex, suggestionRefs, fieldRef, activedescendant]);
 
     // Have an option for static options and also a function to pass and format suggestions
     return (
