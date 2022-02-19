@@ -6,12 +6,14 @@ import React, {
   useEffect,
   useImperativeHandle,
   SyntheticEvent,
+  BaseSyntheticEvent,
 } from "react";
 import { Field } from "../field/Field";
 import styled from "styled-components";
 import { Keys } from "../../../utils/keycodes";
 import { classnames } from "../../../utils/component-utils";
 import { useUIDSeed } from "react-uid";
+import { useOutsideAlerter } from "../../../hooks/useClickOutside";
 
 interface IListbox {
   id?: string;
@@ -50,6 +52,7 @@ const ListboxWrapper = styled.div`
 
       &.loader {
         li {
+          cursor: pointer;
           &:hover,
           &.focused {
             background-color: #121212;
@@ -113,6 +116,36 @@ export const Listbox = forwardRef<unknown, any>(
     );
     const loader = loadingTemplate ? loadingTemplate : defaultLoader;
     const listboxRef = useRef<any>();
+
+    const [clickedOutside, setClickedOutside] = useState(false);
+
+    const handleClickOutside = (e: any) => {
+      if (!listboxRef.current.contains(e.target)) {
+        setClickedOutside(true);
+      } else {
+        setClickedOutside(false);
+      }
+    };
+
+    useEffect(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    });
+
+    useEffect(() => {
+      console.log(clickedOutside);
+      if (clickedOutside) {
+        hideDropdown();
+      }
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [clickedOutside]);
+
+    const handleClickInside = () => setClickedOutside(false);
+
     const fieldRef = useRef<any>();
     useImperativeHandle(ref, () => fieldRef.current);
 
@@ -132,13 +165,16 @@ export const Listbox = forwardRef<unknown, any>(
     const onSelectionHandler = (e: SyntheticEvent, selection: any) => {
       fieldRef.current.value = selection.label;
       onSelection && onSelection(selection);
+      setClickedOutside(false);
       delayedHideDropdown();
     };
 
     const selectItem = (selection: any) => {
       if (selection) {
         fieldRef.current.value = selection.label;
-        delayedHideDropdown();
+        fieldRef.current.focus();
+        setClickedOutside(false);
+        // delayedHideDropdown();
       }
     };
 
@@ -149,6 +185,13 @@ export const Listbox = forwardRef<unknown, any>(
       var activeItem = getItemAt(activeIndex);
       selectItem(activeItem);
     };
+
+    // const onBlurHandler = (event: any) => {
+    //   console.log(event);
+    //   if (!event.currentTarget.contains(event.relatedTarget)) {
+    //     hideDropdown();
+    //   }
+    // };
 
     const getItemAt = (index: number) => suggestions[index];
 
