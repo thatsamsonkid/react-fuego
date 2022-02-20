@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef } from "react";
+import { useState, forwardRef, BaseSyntheticEvent } from "react";
 import { FieldFix } from "./Field-Fix";
 import styled from "styled-components";
 import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
@@ -12,12 +12,26 @@ const TextFieldWrapper = styled.div<FieldProps>`
   margin: 1rem 0;
   width: 100%;
 
+  // Solves issues with list/dropdowns
+  z-index: 2;
+
+  .field-contents {
+    padding: 0 1rem;
+    border-radius: 1.4rem;
+    position: relative;
+    padding: 0.5rem 1rem;
+  }
+
   label {
     position: absolute;
     margin: 0;
-    left: 1.4rem;
-    top: 1.5rem;
+    top: 0.7rem;
+    left: 1.2rem;
     font-size: 1.6rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 24px);
     pointer-events: none;
     transform-origin: left top;
     transition: color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
@@ -36,10 +50,10 @@ const TextFieldWrapper = styled.div<FieldProps>`
     opacity: 0;
   }
 
-  &.focused,
+  /* &.focused,
   &.focused input {
     z-index: 2;
-  }
+  } */
 
   &.focused label,
   &.focused.filled label,
@@ -47,44 +61,26 @@ const TextFieldWrapper = styled.div<FieldProps>`
     opacity: 0;
   }
 
-  input {
-    border-radius: 1.4rem;
-    border: none;
-    width: 100%;
-    font-size: 1.6rem;
-    height: 4.4rem;
-    font-family: inherit;
-    padding: 0 1.6rem;
-  }
-
+  input,
   textarea {
     border: none;
     width: 100%;
     font-size: 1.6rem;
     font-family: inherit;
+
+    &:focus {
+      outline: 0;
+    }
+  }
+
+  input {
+    height: 1.4375em;
+  }
+
+  textarea {
     resize: vertical;
     min-height: 4.4rem;
-    padding: 0;
     max-height: 10rem;
-  }
-
-  .wrapper-textarea {
-    border-radius: 1.4rem;
-    min-height: 4.4rem;
-    padding: 1rem 1.7rem;
-  }
-
-  /* .no-outline input {
-    border: none;
-  }
-
-  .square input {
-    border-radius: 4px;
-  } */
-
-  input:focus,
-  textarea:focus {
-    outline: 0;
   }
 
   /* prefix  */
@@ -123,13 +119,20 @@ const TextFieldWrapper = styled.div<FieldProps>`
   /* Theme */
   input,
   textarea,
-  .wrapper-textarea {
-    background-color: ${({ theme }) => theme.palette.primary.main};
-    color: ${({ theme }) => theme.palette.primary.contrastText};
+  .field-contents {
+    background-color: ${({ theme }) =>
+      themeOrDefault(theme.formField.bg, theme.palette.primary.main)};
+    color: ${({ theme }) =>
+      themeOrDefault(theme.formField.fg, theme.palette.primary.contrastText)};
   }
 
   label {
-    color: ${({ theme }) => theme.palette.primary.contrastText};
+    color: ${({ theme }) =>
+      theme &&
+      themeOrDefault(
+        theme.formField.labelfg,
+        theme.palette.primary.contrastText
+      )};
 
     .required {
       color: ${({ theme }) =>
@@ -147,8 +150,7 @@ const TextFieldWrapper = styled.div<FieldProps>`
       themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
   }
 
-  &.has-error input,
-  &.has-error .wrapper-textarea {
+  &.has-error .field-contents {
     outline: 2px solid
       ${({ theme }) =>
         theme &&
@@ -183,11 +185,6 @@ const switchFieldStyle = (fieldStyle: string) => {
   }
 };
 
-const generateFieldKey = (() => {
-  let count = 0;
-  return () => `field-control-${++count}`;
-})();
-
 export interface FieldProps {
   id?: string;
   labelId?: string;
@@ -212,6 +209,7 @@ export interface FieldProps {
   autocomplete?: any;
   onKeyDown?: any;
   onKeyUp?: any;
+  size: "small" | "regular";
   fieldStyle?: "inFieldFloat" | "outlineFloat" | "outsideFloat";
 }
 
@@ -240,6 +238,7 @@ export const Field = forwardRef(
       required,
       fieldStyle,
       labelId = "",
+      size = "regular",
       ...props
     }: FieldProps,
     ref: any
@@ -248,8 +247,17 @@ export const Field = forwardRef(
     let fieldId = seed(id);
 
     const [isFocused, setFocus] = useState(false);
+    const [isFilled, setFilled] = useState(false);
 
-    const onChangeHandler = (e: any) => onChange && onChange(e);
+    const onChangeHandler = (e: BaseSyntheticEvent) => {
+      if (e.target && e.target.value && e.target.value.length > 0) {
+        setFilled(true);
+      } else {
+        setFilled(false);
+      }
+      onChange && onChange(e);
+    };
+
     const onKeyUpHandler = (e: any) => onKeyUp && onKeyUp(e);
     const onKeyDownHandler = (e: any) => onKeyDown && onKeyDown(e);
 
@@ -264,19 +272,17 @@ export const Field = forwardRef(
 
     const field =
       type === "textarea" ? (
-        <div className="wrapper-textarea">
-          <textarea
-            name={name}
-            ref={ref}
-            id={id}
-            cols={30}
-            rows={2}
-            onChange={onChangeHandler}
-            onBlur={onBlurHandler}
-            onFocus={onFocusHandler}
-            {...props}
-          ></textarea>
-        </div>
+        <textarea
+          name={name}
+          ref={ref}
+          id={id}
+          cols={30}
+          rows={2}
+          onChange={onChangeHandler}
+          onBlur={onBlurHandler}
+          onFocus={onFocusHandler}
+          {...props}
+        ></textarea>
       ) : (
         <input
           name={name}
@@ -299,13 +305,11 @@ export const Field = forwardRef(
         focused: isFocused || floatLabelAlways,
         "float-label": floatLabel,
         filled:
-          ref &&
-          ref.current &&
-          ref.current.value &&
-          ref.current.value.length > 0,
+          isFilled || (ref && ref.current && ref.current.value.length > 0),
         "has-placeholder": placeholder,
         "has-prefix": prefix,
         "has-error": fieldErrors,
+        "fue-field--sm": size === "small" ? true : false,
       },
       className
     );
@@ -315,15 +319,17 @@ export const Field = forwardRef(
         <TextFieldWrapper
           className={textFieldClasses}
           fieldStyle={fieldStyle}
+          size={size}
           {...props}
         >
           <FieldFix type="prefix">{prefix}</FieldFix>
-          {field}
-          <label id={labelId} htmlFor={fieldId}>
-            {children}
-            {required && <span className="required">*</span>}
-          </label>
-          <div></div>
+          <div className="field-contents">
+            {field}
+            <label id={labelId} htmlFor={fieldId}>
+              {children}
+              {required && <span className="required">*</span>}
+            </label>
+          </div>
           <FieldFix type="suffix">{suffix}</FieldFix>
           <div className="error">
             <span className="error--msg">{errorLabel}</span>

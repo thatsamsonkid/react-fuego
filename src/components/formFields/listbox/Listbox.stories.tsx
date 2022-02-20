@@ -9,6 +9,10 @@ export default {
   component: Listbox,
   argTypes: {
     // backgroundColor: { control: "color" },
+    fieldSize: {
+      options: ["small", "regular"],
+      control: { type: "radio" },
+    },
   },
 } as ComponentMeta<typeof Listbox>;
 
@@ -31,7 +35,7 @@ const Template: ComponentStory<typeof Listbox> = (args) => {
       <div className="row">
         <div className="col">
           <form>
-            <Listbox label="control-1" {...args}></Listbox>
+            <Listbox label="Name" {...args}></Listbox>
           </form>
         </div>
       </div>
@@ -47,6 +51,19 @@ Default.args = {
     { id: 2, label: "Dropdown", value: "dropdown" },
     { id: 3, label: "Bro", value: "bro" },
   ],
+  onSelection: (e) => console.log(e),
+  onChange: () => console.log("woo"),
+};
+
+export const Small = Template.bind({});
+Small.args = {
+  name: "name",
+  options: [
+    { id: 1, label: "Cool", value: "cool" },
+    { id: 2, label: "Dropdown", value: "dropdown" },
+    { id: 3, label: "Bro", value: "bro" },
+  ],
+  fieldSize: "small",
   onSelection: (e) => console.log(e),
   onChange: () => console.log("woo"),
 };
