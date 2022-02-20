@@ -5,13 +5,14 @@ import React, {
   useRef,
   useEffect,
   useImperativeHandle,
-  SyntheticEvent
+  SyntheticEvent,
 } from "react";
 import { Field } from "../field/Field";
 import styled from "styled-components";
 import { Keys } from "../../../utils/keycodes";
 import { classnames } from "../../../utils/component-utils";
 import { useUIDSeed } from "react-uid";
+import { themeOrDefault } from "../../../utils/theme-utils";
 
 interface IListbox {
   id?: string;
@@ -23,6 +24,7 @@ interface IListbox {
   loadingTemplate?: any;
   onSelection?: any;
   onChange?: any;
+  fieldSize?: "small" | "regular";
 }
 
 const ListboxWrapper = styled.div`
@@ -32,10 +34,9 @@ const ListboxWrapper = styled.div`
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     position: absolute;
-    top: 2.6rem;
+    top: ${({ fieldSize }) => (fieldSize === "small" ? "1.6rem" : "3rem")};
     width: 100%;
-    border: 1px solid #212121;
-    border-top: none;
+    border-top: none !important;
     z-index: 1;
     padding-top: 2rem;
 
@@ -49,32 +50,56 @@ const ListboxWrapper = styled.div`
       margin: 0;
 
       &.loader {
-        li {
-          cursor: pointer;
-          &:hover,
-          &.focused {
-            background-color: #121212;
-          }
-        }
       }
 
       li {
-        padding: 0.8rem 1rem;
-        color: white;
-        background-color: #121212;
+        padding: ${({ fieldSize }) =>
+          fieldSize === "small" ? "0.8rem 1rem" : "1.4rem 1rem"};
 
-        &:hover,
-        &.focused {
-          background-color: #212121;
-        }
+        ${({ theme }) =>
+          theme.formField.bg === theme.backgroundColor &&
+          `border-bottom: 2px solid ${theme.formField.outline};`}
 
         &:first-child {
           padding-top: 1.8rem;
         }
 
         &:last-child {
-          border-bottom-left-radius: 0.6rem;
-          border-bottom-right-radius: 0.6rem;
+          border-bottom-left-radius: 0.4rem;
+          border-bottom-right-radius: 0.4rem;
+          border-bottom: none;
+        }
+      }
+    }
+  }
+
+  // theme
+  .combobox-wrapper {
+    ${({ theme }) =>
+      theme.formField.bg === theme.backgroundColor &&
+      `
+    outline: 2px solid ${theme.formField.outline};
+  `}
+
+    & > ul {
+      & li {
+        color: ${({ theme }) =>
+          theme &&
+          themeOrDefault(theme.formField.fg, theme.palette.primary.main)};
+        background-color: ${({ theme }) =>
+          theme && themeOrDefault(theme.formField.bg, theme.backgroundColor)};
+
+        &:hover,
+        &.focused {
+          color: ${({ theme }) =>
+            theme &&
+            themeOrDefault(
+              theme.listbox.hfg,
+              theme.palette.primary.contrastText
+            )};
+          background-color: ${({ theme }) =>
+            theme &&
+            themeOrDefault(theme.listbox.hbg, theme.palette.primary.main)};
         }
       }
     }
@@ -92,10 +117,11 @@ export const Listbox = forwardRef<unknown, any>(
       loadingTemplate = null,
       onSelection,
       onChange,
+      fieldSize = "regular",
+      ...props
     }: IListbox,
     ref: any
   ) => {
-
     const seed = useUIDSeed();
     let id = `${seed("Listbox")}`;
 
@@ -133,6 +159,8 @@ export const Listbox = forwardRef<unknown, any>(
       !expanded && setExpanded(true);
       onChange && onChange(e);
     };
+
+    const onBlurHandler = (e: Event) => checkSelection();
 
     const onSelectionHandler = (e: SyntheticEvent, selection: any) => {
       fieldRef.current.value = selection.label;
@@ -283,6 +311,7 @@ export const Listbox = forwardRef<unknown, any>(
         aria-owns={listId}
         aria-haspopup="listbox"
         id={id}
+        fieldSize={fieldSize}
       >
         <Field
           ref={fieldRef}
@@ -290,9 +319,11 @@ export const Listbox = forwardRef<unknown, any>(
           labelId={labelId}
           floatLabel={false}
           onFocus={showDropdown}
+          onBlur={onBlurHandler}
           onKeyUp={checkKey}
           onKeyDown={setActiveItem}
           onChange={onChangeHandler}
+          size={fieldSize}
           aria-activedescendant={activedescendant}
         >
           {label}

@@ -78,6 +78,19 @@ export const InFieldFloat = css`
     top: 1.4rem;
   }
 
+  &.fue-field--sm {
+    label {
+      top: 0.8rem;
+    }
+
+    // Non Float Label
+    .field-contents {
+      padding-top: 0.6rem;
+      padding-bottom: 0.6rem;
+    }
+  }
+
+  // Non Float Label
   .field-contents {
     padding-top: 1.2rem;
     padding-bottom: 1.2rem;
@@ -88,6 +101,13 @@ export const InFieldFloat = css`
       padding-top: 1.8rem;
       padding-bottom: 0.6rem;
     }
+
+    &.fue-field--sm {
+      .field-contents {
+        padding-top: 1.4rem;
+        padding-bottom: 0;
+      }
+    }
   }
 
   &.float-label.filled label,
@@ -96,6 +116,12 @@ export const InFieldFloat = css`
     transform: translate(0, -0.8rem) scale(0.75);
     opacity: 1 !important;
     top: 1.2rem;
+
+    &.fue-field--sm {
+      .label {
+        transform: translate(0, -0.8rem) scale(0.65);
+      }
+    }
   }
 
   &.filled input,

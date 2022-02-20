@@ -91,6 +91,10 @@ export const theme = {
     focusOutline: "",
     errorfg: "",
   },
+  listbox: {
+    hbg: "#556cd6",
+    hfg: "#fff",
+  },
   breakpoints: {
     mobile: `(min-width: 575.98px) and (max-width: 768px)`,
     mobileAndAbove: `(min-width: 575.98px)`,
@@ -196,6 +200,10 @@ export const darkTheme = {
     outline: "",
     focusOutline: "",
     errorfg: "",
+  },
+  listbox: {
+    hbg: "#556cd6",
+    hfg: "#fff",
   },
   breakpoints: {
     mobile: `(min-width: 575.98px) and (max-width: 768px)`,

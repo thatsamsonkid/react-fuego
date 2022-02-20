@@ -12,6 +12,9 @@ const TextFieldWrapper = styled.div<FieldProps>`
   margin: 1rem 0;
   width: 100%;
 
+  // Solves issues with list/dropdowns
+  z-index: 2;
+
   .field-contents {
     padding: 0 1rem;
     border-radius: 1.4rem;
@@ -47,10 +50,10 @@ const TextFieldWrapper = styled.div<FieldProps>`
     opacity: 0;
   }
 
-  &.focused,
+  /* &.focused,
   &.focused input {
     z-index: 2;
-  }
+  } */
 
   &.focused label,
   &.focused.filled label,
@@ -58,29 +61,26 @@ const TextFieldWrapper = styled.div<FieldProps>`
     opacity: 0;
   }
 
-  input {
-    border-radius: 1.4rem;
-    border: none;
-    width: 100%;
-    font-size: 1.6rem;
-    height: 1.4375em;
-    font-family: inherit;
-  }
-
+  input,
   textarea {
     border: none;
     width: 100%;
     font-size: 1.6rem;
     font-family: inherit;
-    resize: vertical;
-    min-height: 4.4rem;
-    padding: 0;
-    max-height: 10rem;
+
+    &:focus {
+      outline: 0;
+    }
   }
 
-  input:focus,
-  textarea:focus {
-    outline: 0;
+  input {
+    height: 1.4375em;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 4.4rem;
+    max-height: 10rem;
   }
 
   /* prefix  */
@@ -209,6 +209,7 @@ export interface FieldProps {
   autocomplete?: any;
   onKeyDown?: any;
   onKeyUp?: any;
+  size: "small" | "regular";
   fieldStyle?: "inFieldFloat" | "outlineFloat" | "outsideFloat";
 }
 
@@ -237,6 +238,7 @@ export const Field = forwardRef(
       required,
       fieldStyle,
       labelId = "",
+      size = "regular",
       ...props
     }: FieldProps,
     ref: any
@@ -302,10 +304,12 @@ export const Field = forwardRef(
       {
         focused: isFocused || floatLabelAlways,
         "float-label": floatLabel,
-        filled: isFilled,
+        filled:
+          isFilled || (ref && ref.current && ref.current.value.length > 0),
         "has-placeholder": placeholder,
         "has-prefix": prefix,
         "has-error": fieldErrors,
+        "fue-field--sm": size === "small" ? true : false,
       },
       className
     );
@@ -315,6 +319,7 @@ export const Field = forwardRef(
         <TextFieldWrapper
           className={textFieldClasses}
           fieldStyle={fieldStyle}
+          size={size}
           {...props}
         >
           <FieldFix type="prefix">{prefix}</FieldFix>
