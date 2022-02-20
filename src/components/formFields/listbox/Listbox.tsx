@@ -16,7 +16,7 @@ import { themeOrDefault } from "../../../utils/theme-utils";
 
 interface IListbox {
   id?: string;
-  label: string;
+  label?: string;
   children?: any;
   autocomplete?: any;
   options?: Array<any>;
@@ -27,7 +27,7 @@ interface IListbox {
   fieldSize?: "small" | "regular";
 }
 
-const ListboxWrapper = styled.div`
+const ListboxWrapper = styled.div<IListbox>`
   position: relative;
   .combobox-wrapper {
     border-radius: 7px;
