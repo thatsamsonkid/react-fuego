@@ -13,8 +13,12 @@ export default {
 
 const Template: ComponentStory<typeof Tabs> = (args) => (
   <Tabs {...args}>
-    <Tab label="tab1">Tab 1</Tab>
-    <Tab label="tab2">Tab 2</Tab>
+    <Tab label="tab1">
+      <div><p>Tab 1</p></div>
+    </Tab>
+    <Tab label="tab2">
+      <div><p>Tab 2</p></div>
+    </Tab>
   </Tabs>
 );
 
