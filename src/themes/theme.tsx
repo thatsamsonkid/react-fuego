@@ -95,6 +95,13 @@ export const theme = {
     hbg: "#556cd6",
     hfg: "#fff",
   },
+  tabs: {
+    bg: "#fff",
+    fg: "#556cd6",
+    hfg: "#fff",
+    hbg: "#556cd6",
+    accent: "#556cd6",
+  },
   breakpoints: {
     mobile: `(min-width: 575.98px) and (max-width: 768px)`,
     mobileAndAbove: `(min-width: 575.98px)`,
@@ -204,6 +211,13 @@ export const darkTheme = {
   listbox: {
     hbg: "#556cd6",
     hfg: "#fff",
+  },
+  tabs: {
+    bg: "#484848",
+    fg: "#fff",
+    hfg: "#212121",
+    hbg: "#fff",
+    accent: "#fff",
   },
   breakpoints: {
     mobile: `(min-width: 575.98px) and (max-width: 768px)`,

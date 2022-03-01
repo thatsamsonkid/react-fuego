@@ -16,16 +16,32 @@ export interface ITab {
 
 /**
  * TODO:
- * 
+ *
  * Disabled View
- * 
+ *
  */
 
 const TabWrapper = styled.button`
-border: none;
-padding: 1rem 2rem;
-min-width: 9rem;
-min-height: 4.8rem;
+  border: none;
+  padding: 1rem 2rem;
+  min-width: 9rem;
+  min-height: 4.8rem;
+  transition: background-color 0.3s, color 0.3s;
+
+  // theme
+  background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.bg};
+  color: ${({ theme }) => theme && theme.tabs && theme.tabs.fg};
+
+  &:hover {
+    background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.hbg};
+    color: ${({ theme }) => theme && theme.tabs && theme.tabs.hfg};
+  }
+
+  &:focus {
+    outline: 1px dashed
+      ${({ theme }) => theme && theme.tabs && theme.tabs.accent};
+    outline-offset: -1px;
+  }
 `;
 
 export const Tab = forwardRef(
@@ -44,8 +60,7 @@ export const Tab = forwardRef(
     }: ITab,
     ref: any
   ) => {
-
-    const isActiveTab = () => activeTab === label ? true : false;
+    const isActiveTab = () => (activeTab === label ? true : false);
     const tabClasses = classnames(
       {
         "sm-tab--active": isActiveTab(),
@@ -53,15 +68,13 @@ export const Tab = forwardRef(
       `sm-tab ${className}`
     );
 
-
-
     useEffect(() => {
       console.log(ref);
     }, [ref, activeTab]);
 
-
     return (
-      <TabWrapper role="tab"
+      <TabWrapper
+        role="tab"
         id={tabId}
         ref={ref}
         aria-controls={tabPanelId}
@@ -72,5 +85,5 @@ export const Tab = forwardRef(
         <span>{label}</span>
       </TabWrapper>
     );
-  });
-
+  }
+);
