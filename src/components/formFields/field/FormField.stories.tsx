@@ -7,9 +7,7 @@ import { useForm } from "react-hook-form";
 export default {
   title: "Components/Form Fields/Text Fields",
   component: Field,
-  argTypes: {
-    // backgroundColor: { control: "color" },
-  },
+  argTypes: {},
 } as ComponentMeta<typeof Field>;
 
 const Template: ComponentStory<typeof Field> = (args) => {
@@ -54,6 +52,22 @@ TextField.args = {
   name: "name",
   floatLabel: true,
   autocomplete: "off",
+};
+
+export const OutlineField = Template.bind({});
+OutlineField.args = {
+  name: "name",
+  floatLabel: true,
+  autocomplete: "off",
+  fieldStyle: "outlineFloat",
+};
+
+export const outfieldFloat = Template.bind({});
+outfieldFloat.args = {
+  name: "name",
+  floatLabel: true,
+  autocomplete: "off",
+  fieldStyle: "outsideFloat",
 };
 
 export const TextArea = Template.bind({});

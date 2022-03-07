@@ -1,7 +1,12 @@
 import { useState, forwardRef, BaseSyntheticEvent } from "react";
 import { FieldFix } from "./Field-Fix";
 import styled from "styled-components";
-import { InFieldFloat, outFieldFloat, outlineFieldFloat } from "./FieldStyles";
+import {
+  BaseFieldStyles,
+  InFieldFloat,
+  outFieldFloat,
+  outlineFieldFloat,
+} from "./FieldStyles";
 import { themeOrDefault } from "../../../utils/theme-utils";
 import { classnames } from "../../../utils/component-utils";
 import { useUIDSeed } from "react-uid";
@@ -140,6 +145,10 @@ const TextFieldWrapper = styled.div<FieldProps>`
         themeOrDefault(theme.formField.errorfg, theme.palette.error.main)};
     }
   }
+
+  ${() => {
+    return BaseFieldStyles;
+  }}
 
   ${({ theme, fieldStyle }) => selectFieldStyle(theme, fieldStyle)}
 
