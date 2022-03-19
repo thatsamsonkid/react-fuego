@@ -34,11 +34,12 @@ const ListboxWrapper = styled.div<IListbox>`
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     position: absolute;
-    top: ${({ fieldSize }) => (fieldSize === "small" ? "1.6rem" : "3rem")};
+    top: ${({ fieldSize }) => (fieldSize === "small" ? "2.6rem" : "3rem")};
     width: 100%;
     border-top: none !important;
     z-index: 1;
-    padding-top: 2rem;
+    padding-top: ${({ fieldSize }) =>
+      fieldSize === "small" ? "1rem" : "2rem"};
 
     &.hidden {
       display: none;
@@ -49,7 +50,16 @@ const ListboxWrapper = styled.div<IListbox>`
       padding: 0;
       margin: 0;
 
-      &.loader {
+      &.loader li {
+        color: ${({ theme }) =>
+          theme &&
+          themeOrDefault(
+            theme.listbox.hfg,
+            theme.palette.primary.contrastText
+          )};
+        background-color: ${({ theme }) =>
+          theme &&
+          themeOrDefault(theme.listbox.hbg, theme.palette.primary.main)};
       }
 
       li {

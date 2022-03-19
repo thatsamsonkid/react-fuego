@@ -161,7 +161,7 @@ export const BaseFieldStyles = css`
   &.focused .field-contents {
     outline: 2px solid
       ${({ theme }) =>
-        theme &&
+        (theme && theme.formField.focusOutline) ||
         themeOrDefault(
           theme.formField.outline,
           theme.palette.primary.contrastText
