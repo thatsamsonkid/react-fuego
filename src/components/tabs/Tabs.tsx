@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useUID, useUIDSeed } from "react-uid";
 import styled, { css } from "styled-components";
+import { classnames } from "../../utils/component-utils";
 import { Tab } from "./Tab";
 
 export interface ITabs {
   children?: any;
   tabIndex?: number;
   fullWidth?: boolean;
+  scrollable?: boolean;
+  className?: string;
 }
 export interface TabIdProps {
   tabId: string;
@@ -30,6 +33,14 @@ interface HighlightProps {
 
 const TabsContainer = styled.div`
   position: relative;
+
+&.scrollable {
+  overflow: hidden;
+}
+
+.scrollable-area {
+  display: flex;
+}
 `;
 const TabsList = styled.div`
   display: flex;
@@ -53,7 +64,26 @@ const TabHighlight = styled.span<HighlightProps>`
   background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.accent};
 `;
 
-export const Tabs = ({ children, fullWidth = false }: ITabs) => {
+const ScrollArrow = styled.button`
+  border:none;
+
+  &::before {
+    content:"";
+    display: block;
+    width: 10px;
+    height:10px;
+    transform: rotate(45deg);
+    border: 1px solid ${({ theme }) => theme && theme.tabs && theme.tabs.fg};
+    border-bottom: none;
+    border-left: none;
+  }
+
+  // theme
+  background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.bg};
+`;
+
+
+export const Tabs = ({ children, fullWidth = false, className, scrollable = false }: ITabs) => {
   const [activeTab, setActiveTab] = useState(children[0].props.label);
   const [ids, setIds] = useState<Array<TabIdProps>>([]);
 
@@ -95,6 +125,17 @@ export const Tabs = ({ children, fullWidth = false }: ITabs) => {
     setActiveTab(tabIds[0].tabId);
   };
 
+  const tabClasses = classnames(
+    {
+      scrollable: scrollable,
+    },
+    className
+  );
+
+
+  // scrollable
+
+
   useEffect(() => {
     const cachedTabIds = generateIDS();
     setDefaultTab(cachedTabIds);
@@ -105,24 +146,28 @@ export const Tabs = ({ children, fullWidth = false }: ITabs) => {
   }, [fullWidth, activeTab]);
 
   return (
-    <TabsContainer id={id}>
-      <TabsList role="tablist">
-        {children.map((child: any, index: number) => {
-          const { label } = child.props;
-          return (
-            <Tab
-              className={`sm-tab--dark-blue ${fullWidth ? "flex-grow-1" : ""}`}
-              id={id}
-              ref={(el: HTMLButtonElement) => tabRefs.push(el)}
-              activeTab={activeTab}
-              key={label}
-              label={label}
-              onTabClick={onTabSelection}
-              {...ids[index]}
-            />
-          );
-        })}
-      </TabsList>
+    <TabsContainer id={id} className={tabClasses}>
+      <div className={`${scrollable ? "scrollable-area" : ""}`}>
+        {scrollable && (<ScrollArrow></ScrollArrow>)}
+        <TabsList role="tablist">
+          {children.map((child: any, index: number) => {
+            const { label } = child.props;
+            return (
+              <Tab
+                className={`sm-tab--dark-blue ${fullWidth ? "flex-grow-1" : ""}`}
+                id={id}
+                ref={(el: HTMLButtonElement) => tabRefs.push(el)}
+                activeTab={activeTab}
+                key={label}
+                label={label}
+                onTabClick={onTabSelection}
+                {...ids[index]}
+              />
+            );
+          })}
+        </TabsList>
+        {scrollable && (<ScrollArrow></ScrollArrow>)}
+      </div>
       <TabHighlight leftOffset={highlightOffset} width={hightlightWidth} />
       {children.map((child: any, index: number) => {
         const tabId = ids[index] && ids[index].tabId ? ids[index].tabId : "";

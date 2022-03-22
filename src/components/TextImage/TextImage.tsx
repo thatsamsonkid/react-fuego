@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { device } from "../..";
 
 const TextImageWrapper = styled.section`
   color: ${({ theme }) => theme.palette && theme.palette.primary.contrastText};
@@ -17,8 +18,12 @@ const SectionHeading = styled.h2`
 
 const SectionText = styled.div`
   p {
-    font-size: 2rem;
+    font-size: 1.6rem;
     line-height: 1.5;
+  }
+
+  @media ${device.tabletAndAbove} {
+    font-size: 2rem;
   }
 `;
 

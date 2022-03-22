@@ -10,6 +10,9 @@ export default {
     fullWidth: {
       type: "boolean",
     },
+    scrollable: {
+      type: "boolean",
+    },
   },
 } as ComponentMeta<typeof Tabs>;
 
@@ -28,6 +31,31 @@ const Template: ComponentStory<typeof Tabs> = (args) => (
   </Tabs>
 );
 
+const ScrollTemplate: ComponentStory<typeof Tabs> = (args) => (
+  <Tabs {...args}>
+    <Tab label="tab1">
+      <div>
+        <p>Tab 1</p>
+      </div>
+    </Tab>
+    <Tab label="tab2">
+      <div>
+        <p>Tab 2</p>
+      </div>
+    </Tab>
+    <Tab label="tab3">
+      <div>
+        <p>Tab 3</p>
+      </div>
+    </Tab>
+    <Tab label="tab4">
+      <div>
+        <p>Tab 4</p>
+      </div>
+    </Tab>
+  </Tabs>
+);
+
 export const Default = Template.bind({});
 Default.args = {};
 
@@ -35,3 +63,9 @@ export const FullWidth = Template.bind({});
 FullWidth.args = {
   fullWidth: true,
 };
+
+export const Scrollable = ScrollTemplate.bind({});
+Scrollable.args = {
+  scrollable: true,
+};
+
