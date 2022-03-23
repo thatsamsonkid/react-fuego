@@ -21,6 +21,10 @@ interface HighlightProps {
   width?: number;
 }
 
+interface IArrowButton {
+  direction: "up" | "left" | "right" | "down";
+}
+
 /**
  * TODO:
  *
@@ -34,13 +38,13 @@ interface HighlightProps {
 const TabsContainer = styled.div`
   position: relative;
 
-&.scrollable {
-  overflow: hidden;
-}
+  &.scrollable {
+    overflow: hidden;
+  }
 
-.scrollable-area {
-  display: flex;
-}
+  .scrollable-area {
+    display: flex;
+  }
 `;
 const TabsList = styled.div`
   display: flex;
@@ -64,15 +68,17 @@ const TabHighlight = styled.span<HighlightProps>`
   background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.accent};
 `;
 
-const ScrollArrow = styled.button`
-  border:none;
+const ScrollArrow = styled.button<IArrowButton>`
+  border: none;
 
   &::before {
-    content:"";
+    content: "";
     display: block;
     width: 10px;
-    height:10px;
-    transform: rotate(45deg);
+    height: 10px;
+    transform: rotate(
+      ${({ direction }) => (direction === "right" ? "45" : "225")}deg
+    );
     border: 1px solid ${({ theme }) => theme && theme.tabs && theme.tabs.fg};
     border-bottom: none;
     border-left: none;
@@ -80,10 +86,26 @@ const ScrollArrow = styled.button`
 
   // theme
   background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.bg};
+
+  &:hover,
+  &:focus {
+    background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.hbg};
+    color: ${({ theme }) => theme && theme.tabs && theme.tabs.hfg};
+
+    &::before {
+      border: 1px solid ${({ theme }) => theme && theme.tabs && theme.tabs.hfg};
+      border-bottom: none;
+      border-left: none;
+    }
+  }
 `;
 
-
-export const Tabs = ({ children, fullWidth = false, className, scrollable = false }: ITabs) => {
+export const Tabs = ({
+  children,
+  fullWidth = false,
+  className,
+  scrollable = false,
+}: ITabs) => {
   const [activeTab, setActiveTab] = useState(children[0].props.label);
   const [ids, setIds] = useState<Array<TabIdProps>>([]);
 
@@ -132,9 +154,7 @@ export const Tabs = ({ children, fullWidth = false, className, scrollable = fals
     className
   );
 
-
   // scrollable
-
 
   useEffect(() => {
     const cachedTabIds = generateIDS();
@@ -148,13 +168,15 @@ export const Tabs = ({ children, fullWidth = false, className, scrollable = fals
   return (
     <TabsContainer id={id} className={tabClasses}>
       <div className={`${scrollable ? "scrollable-area" : ""}`}>
-        {scrollable && (<ScrollArrow></ScrollArrow>)}
+        {scrollable && <ScrollArrow direction="left"></ScrollArrow>}
         <TabsList role="tablist">
           {children.map((child: any, index: number) => {
             const { label } = child.props;
             return (
               <Tab
-                className={`sm-tab--dark-blue ${fullWidth ? "flex-grow-1" : ""}`}
+                className={`sm-tab--dark-blue ${
+                  fullWidth ? "flex-grow-1" : ""
+                }`}
                 id={id}
                 ref={(el: HTMLButtonElement) => tabRefs.push(el)}
                 activeTab={activeTab}
@@ -166,7 +188,7 @@ export const Tabs = ({ children, fullWidth = false, className, scrollable = fals
             );
           })}
         </TabsList>
-        {scrollable && (<ScrollArrow></ScrollArrow>)}
+        {scrollable && <ScrollArrow direction="right"></ScrollArrow>}
       </div>
       <TabHighlight leftOffset={highlightOffset} width={hightlightWidth} />
       {children.map((child: any, index: number) => {
