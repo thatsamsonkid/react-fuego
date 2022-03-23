@@ -23,6 +23,7 @@ interface HighlightProps {
 
 interface IArrowButton {
   direction: "up" | "left" | "right" | "down";
+  onClick?: any;
 }
 
 /**
@@ -34,6 +35,9 @@ interface IArrowButton {
  * Make a draggable
  * Make or get a generic hidden style and visually hidden
  */
+const TabsList = styled.div`
+ display: flex;
+`;
 
 const TabsContainer = styled.div`
   position: relative;
@@ -42,13 +46,25 @@ const TabsContainer = styled.div`
     overflow: hidden;
   }
 
+  ${TabsList} {
+    position: relative;
+    display: inline-block;
+    flex: 1 1 auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+  }
+
   .scrollable-area {
     display: flex;
   }
 `;
-const TabsList = styled.div`
-  display: flex;
-`;
+
 
 const TabPanel = styled.div`
   padding: 2.4rem;
@@ -68,20 +84,38 @@ const TabHighlight = styled.span<HighlightProps>`
   background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.accent};
 `;
 
+/**
+ * TODO: Move to a separate file to separate from tabs
+ */
+const RightScrollArrowStyles = css`
+transform: rotate(45deg);
+right: 12px;
+`;
+
+const LeftScrollArrowStyles = css`
+transform: rotate(225deg);
+right: 8px;
+`;
+
 const ScrollArrow = styled.button<IArrowButton>`
   border: none;
+  min-width: 3rem;
+  position: relative;
 
   &::before {
     content: "";
     display: block;
     width: 10px;
     height: 10px;
-    transform: rotate(
-      ${({ direction }) => (direction === "right" ? "45" : "225")}deg
-    );
     border: 1px solid ${({ theme }) => theme && theme.tabs && theme.tabs.fg};
     border-bottom: none;
     border-left: none;
+    position: absolute;
+    right: 12px;
+    top: 20px;
+
+    ${({ direction }) => (direction === "right" ? RightScrollArrowStyles : LeftScrollArrowStyles)}
+
   }
 
   // theme
@@ -155,6 +189,10 @@ export const Tabs = ({
   );
 
   // scrollable
+  const scrollTab = (direction: string) => {
+    console.log(direction);
+
+  }
 
   useEffect(() => {
     const cachedTabIds = generateIDS();
@@ -168,15 +206,14 @@ export const Tabs = ({
   return (
     <TabsContainer id={id} className={tabClasses}>
       <div className={`${scrollable ? "scrollable-area" : ""}`}>
-        {scrollable && <ScrollArrow direction="left"></ScrollArrow>}
+        {scrollable && <ScrollArrow direction="left" onClick={() => scrollTab("left")}></ScrollArrow>}
         <TabsList role="tablist">
           {children.map((child: any, index: number) => {
             const { label } = child.props;
             return (
               <Tab
-                className={`sm-tab--dark-blue ${
-                  fullWidth ? "flex-grow-1" : ""
-                }`}
+                className={`sm-tab--dark-blue ${fullWidth ? "flex-grow-1" : ""
+                  }`}
                 id={id}
                 ref={(el: HTMLButtonElement) => tabRefs.push(el)}
                 activeTab={activeTab}
@@ -188,7 +225,7 @@ export const Tabs = ({
             );
           })}
         </TabsList>
-        {scrollable && <ScrollArrow direction="right"></ScrollArrow>}
+        {scrollable && <ScrollArrow direction="right" onClick={() => scrollTab("right")}></ScrollArrow>}
       </div>
       <TabHighlight leftOffset={highlightOffset} width={hightlightWidth} />
       {children.map((child: any, index: number) => {
