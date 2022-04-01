@@ -14,6 +14,7 @@ export interface ITabs {
   fullWidth?: boolean;
   scrollable?: boolean;
   className?: string;
+  alignment?: "center" | "right" | "left";
 }
 export interface TabIdProps {
   tabId: string;
@@ -160,6 +161,7 @@ export const Tabs = ({
   fullWidth = false,
   className,
   scrollable = false,
+  alignment = "center",
 }: ITabs) => {
   const [activeTab, setActiveTab] = useState(children[0].props.label);
   const [ids, setIds] = useState<Array<TabIdProps>>([]);
@@ -173,6 +175,7 @@ export const Tabs = ({
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const [maxScrollLeft, setMaxScrollLeft] = useState(0);
+  const [showArrows, setShowArrows] = useState(true);
 
   const tabRefs = useRef<HTMLElement[]>([]);
   const pushTabRef = (el: any, index: number) => {
@@ -319,9 +322,21 @@ export const Tabs = ({
   };
 
   // TODO: Need to change this
-  // const onWindowResize = debounce(() => {
-  //   console.log("window resize");
-  // }, 50);
+  const onWindowResize = debounce((e) => {
+    console.log("window resize");
+    console.log(e);
+    // console.log(draggableRef.current.offsetWidth);
+    if (
+      draggableRef.current &&
+      draggableRef.current.offsetWidth &&
+      draggableRef.current.offsetWidth > e.target.innerWidth
+    ) {
+      console.log("Enable Scrolling");
+      setShowArrows(true);
+    } else {
+      setShowArrows(false);
+    }
+  }, 50);
 
   const scrollDisable = (direction: Direction) => {
     if (tabScrollArea && tabScrollArea.current) {
@@ -350,10 +365,10 @@ export const Tabs = ({
   }, [tabScrollArea]);
 
   // Listener for on window resize
-  // useEffect(() => {
-  //   window.addEventListener("resize", onWindowResize);
-  //   return window.removeEventListener("resize", () => {});
-  // }, [tabScrollArea]);
+  useEffect(() => {
+    window.addEventListener("resize", onWindowResize);
+    return window.removeEventListener("resize", () => {});
+  }, [tabScrollArea]);
 
   useEffect(() => {
     if (tabScrollArea && tabScrollArea.current && draggableRef) {
@@ -377,17 +392,19 @@ export const Tabs = ({
     );
   };
 
-  // useEffect(() => {
-  //   console.log(tabScrollArea.current?.scrollLeft);
-  // }, [tabScrollArea.current?.scrollLeft]);
-
   return (
     <TabsContainer id={id} className={tabClasses}>
-      {maxScrollLeft} {"  "}
-      {tabScrollArea.current?.scrollLeft}
-      <div className={`${scrollable ? "scrollable-area" : ""}`}>
-        {scrollable && scrollButton("left")}
-        <TabsList ref={tabScrollArea} role="tablist">
+      <div
+        className={`${scrollable ? "scrollable-area" : ""} ${
+          alignment === "center" ? "justify-content-center" : ""
+        }`}
+      >
+        {scrollable && showArrows && scrollButton("left")}
+        <TabsList
+          ref={tabScrollArea}
+          role="tablist"
+          className={`${fullWidth ? "flex-grow-1" : ""}`}
+        >
           <Draggable
             draggableRef={draggableRef}
             onDrag={handleDrag}
@@ -418,7 +435,7 @@ export const Tabs = ({
             />
           )}
         </TabsList>
-        {scrollable && scrollButton("right")}
+        {scrollable && showArrows && scrollButton("right")}
       </div>
       {!scrollable && (
         <TabHighlight leftOffset={highlightOffset} width={hightlightWidth} />

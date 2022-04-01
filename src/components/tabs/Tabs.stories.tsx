@@ -78,3 +78,9 @@ export const Scrollable = ScrollTemplate.bind({});
 Scrollable.args = {
   scrollable: true,
 };
+
+export const ScrollableAndFullWidth = ScrollTemplate.bind({});
+ScrollableAndFullWidth.args = {
+  scrollable: true,
+  fullWidth: true,
+};
