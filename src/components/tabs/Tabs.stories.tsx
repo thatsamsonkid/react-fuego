@@ -53,6 +53,16 @@ const ScrollTemplate: ComponentStory<typeof Tabs> = (args) => (
         <p>Tab 4</p>
       </div>
     </Tab>
+    <Tab label="tab5">
+      <div>
+        <p>Tab 3</p>
+      </div>
+    </Tab>
+    <Tab label="tab6">
+      <div>
+        <p>Tab 4</p>
+      </div>
+    </Tab>
   </Tabs>
 );
 
@@ -68,4 +78,3 @@ export const Scrollable = ScrollTemplate.bind({});
 Scrollable.args = {
   scrollable: true,
 };
-

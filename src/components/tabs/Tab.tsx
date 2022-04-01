@@ -69,7 +69,7 @@ export const Tab = forwardRef(
     );
 
     useEffect(() => {
-      console.log(ref);
+      // console.log(ref);
     }, [ref, activeTab]);
 
     return (
