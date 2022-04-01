@@ -165,50 +165,23 @@ export const Tabs = ({
 }: ITabs) => {
   const [activeTab, setActiveTab] = useState(children[0].props.label);
   const [ids, setIds] = useState<Array<TabIdProps>>([]);
-
   const [hightlightWidth, setHighlightWidth] = useState(90);
   const [highlightOffset, sethighlightOffset] = useState(0);
-
   const [isDragging, setIsDragging] = useState(false);
-  const tabScrollArea = useRef<HTMLDivElement>();
-  const draggableRef = useRef<HTMLDivElement>();
-
   const [scrollPosition, setScrollPosition] = useState(0);
   const [maxScrollLeft, setMaxScrollLeft] = useState(0);
   const [showArrows, setShowArrows] = useState(true);
+  const [arrowState, setArrowState] = useState({
+    left: false,
+    right: false,
+  });
 
+  const tabScrollArea = useRef<HTMLDivElement>();
+  const draggableRef = useRef<HTMLDivElement>();
   const tabRefs = useRef<HTMLElement[]>([]);
-  const pushTabRef = (el: any, index: number) => {
-    if (el && tabRefs && tabRefs.current) {
-      tabRefs.current[index] = el;
-    }
-  };
-
-  const onTabSelection = (tabId: string) => {
-    const activeTab = tabRefs.current.find((tab) => tab?.id === tabId);
-    activeTab && activeTab.scrollIntoView();
-    !isDragging && setActiveTab(tabId);
-  };
 
   const id = useUID();
   const seed = useUIDSeed();
-
-  const updateTabHighlightPosition = (activeTab: string) => {
-    if (tabRefs && tabRefs.current.length > 0) {
-      // console.log(tabRefs);
-
-      const activeTabRef = tabRefs.current.find(
-        (tab: any) => tab && tab.id === activeTab
-      );
-
-      // console.log(activeTabRef);
-      if (activeTabRef) {
-        const offset = activeTabRef.offsetLeft;
-        sethighlightOffset(offset);
-        setHighlightWidth(activeTabRef.offsetWidth);
-      }
-    }
-  };
 
   const generateIDS = () => {
     const tabIds = children.map((childTab: any, index: number) => {
@@ -221,6 +194,32 @@ export const Tabs = ({
     });
     setIds(tabIds);
     return tabIds;
+  };
+
+  const pushTabRef = (el: any, index: number) => {
+    if (el && tabRefs && tabRefs.current) {
+      tabRefs.current[index] = el;
+    }
+  };
+
+  const onTabSelection = (tabId: string) => {
+    const activeTab = tabRefs.current.find((tab) => tab?.id === tabId);
+    activeTab && activeTab.scrollIntoView();
+    !isDragging && setActiveTab(tabId);
+  };
+
+  const updateTabHighlightPosition = (activeTab: string) => {
+    if (tabRefs && tabRefs.current.length > 0) {
+      const activeTabRef = tabRefs.current.find(
+        (tab: any) => tab && tab.id === activeTab
+      );
+
+      if (activeTabRef) {
+        const offset = activeTabRef.offsetLeft;
+        sethighlightOffset(offset);
+        setHighlightWidth(activeTabRef.offsetWidth);
+      }
+    }
   };
 
   // TODO: Add logic for setting a differnt default tab
@@ -313,45 +312,78 @@ export const Tabs = ({
     []
   );
 
+  const calculateMaxLeftScroll = () => {
+    if (tabScrollArea && tabScrollArea.current && draggableRef) {
+      const boundingBox = tabScrollArea.current.getBoundingClientRect();
+      const scrollableAreaWidth = draggableRef.current?.offsetWidth || 0;
+      const scrollWindowWidth = boundingBox.width;
+      if (scrollableAreaWidth > 0 && scrollWindowWidth > 0) {
+        const maxScroll = scrollableAreaWidth - scrollWindowWidth || 0;
+        setMaxScrollLeft(maxScroll);
+      }
+    }
+  };
+
   const handleDragEnd = useCallback(() => {
     setTimeout(() => setIsDragging(false), 100);
   }, []);
 
   const onScroll = () => {
     setScrollPosition(tabScrollArea.current?.scrollLeft || scrollPosition);
+    updateScrollArrowState(maxScrollLeft);
   };
 
   // TODO: Need to change this
   const onWindowResize = debounce((e) => {
-    console.log("window resize");
-    console.log(e);
-    // console.log(draggableRef.current.offsetWidth);
     if (
       draggableRef.current &&
       draggableRef.current.offsetWidth &&
       draggableRef.current.offsetWidth > e.target.innerWidth
     ) {
-      console.log("Enable Scrolling");
       setShowArrows(true);
     } else {
       setShowArrows(false);
     }
+    // TODO: this one has the issue of caching
+    updateScrollArrowState(maxScrollLeft);
   }, 50);
 
-  const scrollDisable = (direction: Direction) => {
-    if (tabScrollArea && tabScrollArea.current) {
-      return (tabScrollArea.current.scrollLeft <= 0 && direction === "left") ||
-        (tabScrollArea.current.scrollLeft >= maxScrollLeft &&
-          direction === "right")
-        ? true
-        : false;
+  const updateScrollArrowState = (lmaxScrollLeft: number) => {
+    if (tabScrollArea && tabScrollArea.current && lmaxScrollLeft > 0) {
+      const newState = { left: false, right: false };
+
+      if (tabScrollArea.current.scrollLeft <= 0) {
+        newState.left = true;
+      }
+
+      if (tabScrollArea.current.scrollLeft >= lmaxScrollLeft) {
+        newState.right = true;
+      }
+
+      setArrowState(newState);
     }
-    return false;
+  };
+
+  const scrollButton = (direction: Direction) => {
+    return (
+      <ScrollArrow
+        direction={direction}
+        disabled={arrowState[direction === "left" ? "left" : "right"]}
+        onClick={() => scrollTab(direction)}
+      ></ScrollArrow>
+    );
   };
 
   useEffect(() => {
     const cachedTabIds = generateIDS();
     setDefaultTab(cachedTabIds);
+    calculateMaxLeftScroll();
+  }, []);
+
+  // Listener for on window resize
+  useEffect(() => {
+    window.addEventListener("resize", onWindowResize);
+    return window.removeEventListener("resize", () => {});
   }, []);
 
   useEffect(() => {
@@ -364,33 +396,13 @@ export const Tabs = ({
     return tabScrollArea.current?.removeEventListener("scroll", () => {});
   }, [tabScrollArea]);
 
-  // Listener for on window resize
   useEffect(() => {
-    window.addEventListener("resize", onWindowResize);
-    return window.removeEventListener("resize", () => {});
-  }, [tabScrollArea]);
-
-  useEffect(() => {
-    if (tabScrollArea && tabScrollArea.current && draggableRef) {
-      const boundingBox = tabScrollArea.current.getBoundingClientRect();
-      const scrollableAreaWidth = draggableRef.current?.offsetWidth || 0;
-      const scrollWindowWidth = boundingBox.width;
-      if (scrollableAreaWidth > 0 && scrollWindowWidth > 0) {
-        const maxScroll = scrollableAreaWidth - scrollWindowWidth || 0;
-        setMaxScrollLeft(maxScroll);
-      }
-    }
+    calculateMaxLeftScroll();
   }, [draggableRef, tabScrollArea]);
 
-  const scrollButton = (direction: Direction) => {
-    return (
-      <ScrollArrow
-        direction={direction}
-        disabled={scrollDisable(direction)}
-        onClick={() => scrollTab(direction)}
-      ></ScrollArrow>
-    );
-  };
+  useEffect(() => {
+    updateScrollArrowState(maxScrollLeft);
+  }, [maxScrollLeft, scrollPosition]);
 
   return (
     <TabsContainer id={id} className={tabClasses}>
