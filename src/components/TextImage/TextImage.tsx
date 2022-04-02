@@ -35,6 +35,7 @@ export interface ITextImage {
   imgAlt?: string;
   imgChild?: any;
   orderReverse?: boolean;
+  imgColClassName?: string;
 }
 
 export function TextImage({
@@ -43,6 +44,7 @@ export function TextImage({
   img = "",
   imgAlt = "",
   orderReverse = false,
+  imgColClassName = "",
   ...props
 }: ITextImage) {
   const rowClassName = orderReverse ? "row" : "row flex-md-row-reverse";
@@ -63,7 +65,7 @@ export function TextImage({
       <div className="container">
         <div className={rowClassName}>
           <div className="col-12 col-md">{imgEl}</div>
-          <div className="col-12 col-md">
+          <div className={`col-12 col-md ${imgColClassName}`}>
             <SectionTextContent>
               {titleEl}
               <SectionText>{children}</SectionText>
