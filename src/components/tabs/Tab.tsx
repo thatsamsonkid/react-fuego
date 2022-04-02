@@ -21,30 +21,7 @@ export interface ITab {
  *
  */
 
-const TabWrapper = styled.button`
-  border: none;
-  padding: 1rem 2rem;
-  min-width: 9rem;
-  min-height: 4.8rem;
-  transition: background-color 0.3s, color 0.3s;
-
-  // theme
-  background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.bg};
-  color: ${({ theme }) => theme && theme.tabs && theme.tabs.fg};
-
-  &:hover {
-    background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.hbg};
-    color: ${({ theme }) => theme && theme.tabs && theme.tabs.hfg};
-  }
-
-  &:focus {
-    outline: 1px dashed
-      ${({ theme }) => theme && theme.tabs && theme.tabs.accent};
-    outline-offset: -1px;
-  }
-`;
-
-export const Tab = forwardRef(
+const TabComponent = forwardRef(
   (
     {
       onTabClick,
@@ -73,7 +50,7 @@ export const Tab = forwardRef(
     }, [ref, activeTab]);
 
     return (
-      <TabWrapper
+      <button
         role="tab"
         id={tabId}
         ref={ref}
@@ -83,7 +60,30 @@ export const Tab = forwardRef(
         onClick={() => !disabled && onTabClick(tabId)}
       >
         <span>{label}</span>
-      </TabWrapper>
+      </button>
     );
   }
 );
+
+export const Tab = styled(TabComponent)`
+  border: none;
+  padding: 1rem 2rem;
+  min-width: 9rem;
+  min-height: 4.8rem;
+  transition: background-color 0.3s, color 0.3s;
+
+  // theme
+  background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.bg};
+  color: ${({ theme }) => theme && theme.tabs && theme.tabs.fg};
+
+  &:hover {
+    background-color: ${({ theme }) => theme && theme.tabs && theme.tabs.hbg};
+    color: ${({ theme }) => theme && theme.tabs && theme.tabs.hfg};
+  }
+
+  &:focus {
+    outline: 1px dashed
+      ${({ theme }) => theme && theme.tabs && theme.tabs.accent};
+    outline-offset: -1px;
+  }
+`;
