@@ -37,7 +37,7 @@ const TabComponent = forwardRef(
     }: ITab,
     ref: any
   ) => {
-    const isActiveTab = () => (activeTab === label ? true : false);
+    const isActiveTab = () => (activeTab === tabId ? true : false);
     const tabClasses = classnames(
       {
         "sm-tab--active": isActiveTab(),
