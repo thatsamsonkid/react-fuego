@@ -1,10 +1,18 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useUID, useUIDSeed } from "react-uid";
 import styled, { css } from "styled-components";
 import debounce from "lodash.debounce";
 import { classnames } from "../../utils/component-utils";
 import { Draggable } from "../draggable/Draggble";
-import { Tab } from "./Tab";
+
+// TODO: Add Validation for children to be of Tab type
+// import { Tab } from "./Tab";
 
 type Direction = "up" | "left" | "right" | "down";
 type Alignment = "left" | "center" | "right";
@@ -110,7 +118,7 @@ const ArrowDisabled = css`
   &:hover,
   &:focus {
     background-color: ${({ theme }) =>
-    theme && theme.tabs && theme.tabs.bg} !important;
+      theme && theme.tabs && theme.tabs.bg} !important;
   }
 
   &::before {
@@ -136,7 +144,7 @@ const ScrollArrow = styled.button<IArrowButton>`
     top: 20px;
 
     ${({ direction }) =>
-    direction === "right" ? RightScrollArrowStyles : LeftScrollArrowStyles}
+      direction === "right" ? RightScrollArrowStyles : LeftScrollArrowStyles}
   }
 
   ${({ disabled }) => disabled && ArrowDisabled}
@@ -205,27 +213,25 @@ export const Tabs = ({
 
   const onTabSelection = (tabId: string) => {
     const activeTab = tabRefs.current.find((tab) => tab?.id === tabId);
-    // console.log(activeTab);
-    // console.log(tabRefs.current);
-    // activeTab && activeTab.scrollIntoView();
+
     if (activeTab && tabScrollArea && tabScrollArea.current) {
-      const rightBoundScrollArea = tabScrollArea.current?.offsetWidth + scrollPosition;
-      const rightBoundCoordinateOfButton = activeTab.offsetLeft + activeTab.offsetWidth;
-      // console.log(rightBoundScrollArea);
-      // console.log(rightBoundCoordinateOfButton);
-      if (rightBoundScrollArea < (rightBoundCoordinateOfButton)) {
-        // console.log("Button out of viewable area");
-        const portionOfTabViewable = (activeTab.offsetLeft - rightBoundScrollArea) * -1;
+      const rightBoundScrollArea =
+        tabScrollArea.current?.offsetWidth + scrollPosition;
+      const rightBoundCoordinateOfButton =
+        activeTab.offsetLeft + activeTab.offsetWidth;
+      if (rightBoundScrollArea < rightBoundCoordinateOfButton) {
+        const portionOfTabViewable =
+          (activeTab.offsetLeft - rightBoundScrollArea) * -1;
         const delta = activeTab.offsetWidth - portionOfTabViewable;
-        // console.log(activeTab.offsetWidth - portionOfTabViewable);
-        const newPosition = tabScrollArea.current.scrollLeft = tabScrollArea.current.scrollLeft + delta;
+        const newPosition = (tabScrollArea.current.scrollLeft =
+          tabScrollArea.current.scrollLeft + delta);
         setScrollPosition(newPosition);
       }
 
       if (scrollPosition > activeTab.offsetLeft) {
         const delta = scrollPosition - activeTab.offsetLeft;
-        const newPosition = tabScrollArea.current.scrollLeft = tabScrollArea.current.scrollLeft - delta;
-        // console.log("Button not fully viewable");
+        const newPosition = (tabScrollArea.current.scrollLeft =
+          tabScrollArea.current.scrollLeft - delta);
         setScrollPosition(newPosition);
       }
     }
@@ -284,28 +290,10 @@ export const Tabs = ({
 
   const handleDrag = useCallback(
     debounce(({ translation, clientX, clientY, id }) => {
-      // console.log(tabRefs);
-      // origin and translation based on viewport/window not parent div
-      // Need to ensure to subsctract parent offset
-
-      // console.log(tabScrollArea);
       setIsDragging(true);
 
       if (tabScrollArea && tabScrollArea.current) {
-        // console.log(tabScrollArea);
-
-        // const boundingBox = tabScrollArea.current.getBoundingClientRect();
-        // const tabScrollOffset = tabScrollArea.current.offsetLeft;
-        // const parentOffset = tabScrollArea.current.offsetParent;
-
-        // const originOffset = clientX - boundingBox.x;
-        // console.log(originOffset);
         const scrollPosition = tabScrollArea.current.scrollLeft;
-        // console.log("scrollpos", scrollPosition);
-        // console.log("dx", translation.x);
-        // console.log("chnage -minus offset", translation.x - boundingBox.left);
-        // console.log("scroll", tabScrollArea.current.scrollLeft - translation.x);
-
         tabScrollArea.current.scrollLeft =
           tabScrollArea.current.scrollLeft - translation.x;
       }
@@ -313,7 +301,10 @@ export const Tabs = ({
     []
   );
 
-  const handleDragEnd = useCallback(() => setTimeout(() => setIsDragging(false), 100), []);
+  const handleDragEnd = useCallback(
+    () => setTimeout(() => setIsDragging(false), 100),
+    []
+  );
 
   const calculateMaxLeftScroll = () => {
     if (tabScrollArea && tabScrollArea.current && draggableRef) {
@@ -382,7 +373,7 @@ export const Tabs = ({
   // Listener for on window resize
   useEffect(() => {
     window.addEventListener("resize", onWindowResize);
-    return window.removeEventListener("resize", () => { });
+    return window.removeEventListener("resize", () => {});
   }, []);
 
   useEffect(() => {
@@ -406,7 +397,7 @@ export const Tabs = ({
   // Listener for on scroll
   useEffect(() => {
     tabScrollArea.current?.addEventListener("scroll", onScroll);
-    return tabScrollArea.current?.removeEventListener("scroll", () => { });
+    return tabScrollArea.current?.removeEventListener("scroll", () => {});
   }, [tabScrollArea]);
 
   useEffect(() => {
@@ -420,8 +411,9 @@ export const Tabs = ({
   return (
     <TabsContainer id={id} className={tabClasses}>
       <div
-        className={`${scrollable ? "scrollable-area" : ""} ${alignment === "center" ? "justify-content-center" : ""
-          }`}
+        className={`${scrollable ? "scrollable-area" : ""} ${
+          alignment === "center" ? "justify-content-center" : ""
+        }`}
       >
         {scrollable && showArrows && scrollButton("left")}
         <TabsList
@@ -435,20 +427,18 @@ export const Tabs = ({
             onDragEnd={handleDragEnd}
           >
             {children.map((child: any, index: number) => {
-              const { label } = child.props;
-              return (
-                <Tab
-                  className={`sm-tab--dark-blue ${fullWidth ? "flex-grow-1" : ""
-                    }`}
-                  id={id}
-                  ref={(ref) => pushTabRef(ref, index)}
-                  activeTab={activeTab}
-                  key={label}
-                  label={label}
-                  onTabClick={onTabSelection}
-                  {...ids[index]}
-                />
-              );
+              const { label, className = "" } = child.props;
+              const newProps = {
+                className: `${fullWidth ? "flex-grow-1" : ""} ${className}`,
+                id,
+                ref: (ref: any) => pushTabRef(ref, index),
+                activeTab: { activeTab },
+                key: label,
+                label: label,
+                onTabClick: onTabSelection,
+                ...ids[index],
+              };
+              return cloneElement(child, { ...newProps });
             })}
           </Draggable>
           {scrollable && (
@@ -467,6 +457,7 @@ export const Tabs = ({
         const tabId = ids[index] && ids[index].tabId ? ids[index].tabId : "";
         const tabPanelId =
           ids[index] && ids[index].tabPanelId ? ids[index].tabPanelId : "";
+
         return (
           <TabPanel
             tabIndex={0}

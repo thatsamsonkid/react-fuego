@@ -1,6 +1,5 @@
 import React, { forwardRef, useEffect } from "react";
 import styled from "styled-components";
-import { classnames } from "../../utils/component-utils";
 
 export interface ITab {
   children?: any;
@@ -28,7 +27,6 @@ const TabComponent = forwardRef(
       label = "",
       disabled = false,
       id = "",
-      className,
       activeTab,
       children,
       tabId = "",
@@ -38,16 +36,6 @@ const TabComponent = forwardRef(
     ref: any
   ) => {
     const isActiveTab = () => (activeTab === tabId ? true : false);
-    const tabClasses = classnames(
-      {
-        "sm-tab--active": isActiveTab(),
-      },
-      `sm-tab ${className}`
-    );
-
-    useEffect(() => {
-      // console.log(ref);
-    }, [ref, activeTab]);
 
     return (
       <button
@@ -56,7 +44,7 @@ const TabComponent = forwardRef(
         ref={ref}
         aria-controls={tabPanelId}
         aria-selected={isActiveTab()}
-        className={tabClasses}
+        className={`${props.className}`}
         onClick={() => !disabled && onTabClick(tabId)}
       >
         <span>{label}</span>

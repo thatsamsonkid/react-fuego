@@ -2,6 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { Tabs } from "./Tabs";
 import { Tab } from "./Tab";
+import styled from "styled-components";
 
 export default {
   title: "Components/Tabs",
@@ -31,13 +32,19 @@ const Template: ComponentStory<typeof Tabs> = (args) => (
   </Tabs>
 );
 
+const WOO = styled(Tab)`
+  && {
+    background-color: green;
+  }
+`;
+
 const ScrollTemplate: ComponentStory<typeof Tabs> = (args) => (
   <Tabs {...args}>
-    <Tab label="tab1">
+    <WOO label="tab1" className="woo">
       <div>
         <p>Tab 1</p>
       </div>
-    </Tab>
+    </WOO>
     <Tab label="tab2">
       <div>
         <p>Tab 2</p>
@@ -55,12 +62,12 @@ const ScrollTemplate: ComponentStory<typeof Tabs> = (args) => (
     </Tab>
     <Tab label="tab5">
       <div>
-        <p>Tab 3</p>
+        <p>Tab 5</p>
       </div>
     </Tab>
     <Tab label="tab6">
       <div>
-        <p>Tab 4</p>
+        <p>Tab 6</p>
       </div>
     </Tab>
   </Tabs>
