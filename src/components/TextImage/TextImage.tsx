@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { device } from "../..";
 
 const TextImageWrapper = styled.section`
   color: ${({ theme }) => theme.palette && theme.palette.primary.contrastText};
@@ -17,8 +18,12 @@ const SectionHeading = styled.h2`
 
 const SectionText = styled.div`
   p {
-    font-size: 2rem;
+    font-size: 1.6rem;
     line-height: 1.5;
+  }
+
+  @media ${device.tabletAndAbove} {
+    font-size: 2rem;
   }
 `;
 
@@ -30,6 +35,8 @@ export interface ITextImage {
   imgAlt?: string;
   imgChild?: any;
   orderReverse?: boolean;
+  imgColClassName?: string;
+  textColClassName?: string;
 }
 
 export function TextImage({
@@ -38,6 +45,8 @@ export function TextImage({
   img = "",
   imgAlt = "",
   orderReverse = false,
+  imgColClassName = "",
+  textColClassName = "",
   ...props
 }: ITextImage) {
   const rowClassName = orderReverse ? "row" : "row flex-md-row-reverse";
@@ -57,8 +66,8 @@ export function TextImage({
     <TextImageWrapper className="py-5 my-5">
       <div className="container">
         <div className={rowClassName}>
-          <div className="col-12 col-md">{imgEl}</div>
-          <div className="col-12 col-md">
+          <div className={`col-12 col-md ${imgColClassName}`}>{imgEl}</div>
+          <div className={`col-12 col-md ${textColClassName}`}>
             <SectionTextContent>
               {titleEl}
               <SectionText>{children}</SectionText>
