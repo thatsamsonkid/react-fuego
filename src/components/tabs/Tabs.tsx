@@ -11,10 +11,7 @@ import debounce from "lodash.debounce";
 import { classnames } from "../../utils/component-utils";
 import { Draggable } from "../draggable/Draggble";
 
-// TODO: Add Validation for children to be of Tab type
-// import { Tab } from "./Tab";
-
-type Direction = "up" | "left" | "right" | "down";
+type Direction = "left" | "right";
 type Alignment = "left" | "center" | "right";
 
 export interface ITabs {
@@ -47,8 +44,8 @@ interface IArrowButton {
  * Integrate Theming
  * WAI-ARIA Create Manual and Automatic Selection
  * Make a pill variation
- * Make a draggable
- * Make or get a generic hidden style and visually hidden
+ * Minor issue, on tab click, full tab not necessarily moved into view
+ * on window resize, lmaxsize is out of date
  */
 interface ITabsList {
   ref: any;
@@ -176,12 +173,11 @@ export const Tabs = ({
   const [ids, setIds] = useState<Array<TabIdProps>>([]);
   const [hightlightWidth, setHighlightWidth] = useState(90);
   const [highlightOffset, sethighlightOffset] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [maxScrollLeft, setMaxScrollLeft] = useState(0);
   const [showArrows, setShowArrows] = useState(true);
   const [arrowState, setArrowState] = useState({
-    left: false,
+    left: true,
     right: false,
   });
 
@@ -211,9 +207,140 @@ export const Tabs = ({
     }
   };
 
-  const onTabSelection = (tabId: string) => {
-    const activeTab = tabRefs.current.find((tab) => tab?.id === tabId);
+  const onTabSelection = (tabId: string) => setActiveTab(tabId);
 
+  // scrollable
+  const scrollTab = (direction: Direction) => {
+    if (tabScrollArea && tabScrollArea.current) {
+      const boundingBox = tabScrollArea.current.getBoundingClientRect();
+      const scrollWindowWidth = boundingBox.width;
+      const scrollPosition = tabScrollArea.current.scrollLeft;
+      let newScrollPosition;
+      switch (direction) {
+        case "right":
+          if (scrollPosition + scrollWindowWidth > maxScrollLeft) {
+            tabScrollArea.current.scrollLeft = maxScrollLeft;
+            newScrollPosition = maxScrollLeft;
+            setScrollPosition(maxScrollLeft);
+          } else {
+            newScrollPosition =
+              tabScrollArea.current.scrollLeft + scrollWindowWidth;
+            tabScrollArea.current.scrollLeft = newScrollPosition;
+            setScrollPosition(newScrollPosition);
+          }
+          break;
+        case "left":
+          if (scrollPosition - scrollWindowWidth > 0) {
+            tabScrollArea.current.scrollLeft = 0;
+            newScrollPosition = 0;
+            setScrollPosition(0);
+          } else {
+            newScrollPosition =
+              tabScrollArea.current.scrollLeft - scrollWindowWidth;
+            tabScrollArea.current.scrollLeft = newScrollPosition;
+            setScrollPosition(newScrollPosition);
+          }
+          break;
+        default:
+          break;
+      }
+
+      // Need to check with scroll post this scroll
+      updateScrollArrowState(maxScrollLeft, newScrollPosition);
+    }
+  };
+
+  const handleDrag = useCallback(({ translation }) => {
+    if (tabScrollArea && tabScrollArea.current) {
+      tabScrollArea.current.scrollLeft =
+        tabScrollArea.current.scrollLeft - translation.x;
+    }
+  }, []);
+
+  const calculateMaxLeftScroll = () => {
+    if (tabScrollArea && tabScrollArea.current && draggableRef) {
+      const boundingBox = tabScrollArea.current.getBoundingClientRect();
+      const scrollableAreaWidth = draggableRef.current?.offsetWidth || 0;
+      const scrollWindowWidth = boundingBox.width;
+      if (scrollableAreaWidth > 0 && scrollWindowWidth > 0) {
+        const maxScroll = scrollableAreaWidth - scrollWindowWidth || 0;
+        setMaxScrollLeft(maxScroll);
+      }
+    }
+  };
+
+  /**
+   * Call on ScrollTab, called on window resize
+   * @param lmaxScrollLeft
+   * @param scrollPosition
+   */
+  const updateScrollArrowState = (
+    lmaxScrollLeft: number,
+    scrollPosition?: number
+  ) => {
+    if (tabScrollArea && tabScrollArea.current && lmaxScrollLeft > 0) {
+      const currentScroll = scrollPosition || tabScrollArea.current.scrollLeft;
+      const newState = { left: false, right: false };
+
+      if (currentScroll <= 0) {
+        newState.left = true;
+      }
+
+      if (currentScroll >= lmaxScrollLeft) {
+        newState.right = true;
+      }
+      setArrowState(newState);
+    }
+  };
+
+  const onTabListScroll = () => {
+    setScrollPosition(tabScrollArea.current?.scrollLeft || scrollPosition);
+    updateScrollArrowState(maxScrollLeft);
+  };
+
+  const scrollButton = (direction: Direction) => {
+    return (
+      <ScrollArrow
+        direction={direction}
+        disabled={arrowState[direction]}
+        onClick={() => scrollTab(direction)}
+      ></ScrollArrow>
+    );
+  };
+
+  // End declarations
+
+  const tabIds = ids && ids.length > 0 ? ids : generateIDS();
+
+  const tabClasses = classnames(
+    {
+      scrollable: scrollable,
+    },
+    className
+  );
+
+  // Listener for on window resize
+  useEffect(() => {
+    const onWindowResize = debounce((e) => {
+      if (
+        draggableRef.current &&
+        draggableRef.current.offsetWidth &&
+        draggableRef.current.offsetWidth > e.target.innerWidth
+      ) {
+        setShowArrows(true);
+      } else {
+        setShowArrows(false);
+      }
+      // TODO: this one has the issue of caching
+      updateScrollArrowState(maxScrollLeft);
+    }, 50);
+
+    window.addEventListener("resize", onWindowResize, { passive: true });
+    return window.removeEventListener("resize", onWindowResize);
+  }, [maxScrollLeft]);
+
+  // On Active Tab Change
+  useEffect(() => {
     if (activeTab && tabScrollArea && tabScrollArea.current) {
       const rightBoundScrollArea =
         tabScrollArea.current?.offsetWidth + scrollPosition;
@@ -236,147 +363,6 @@ export const Tabs = ({
       }
     }
 
-    !isDragging && setActiveTab(tabId);
-  };
-
-  // TODO: Add logic for setting a differnt default tab
-  const setDefaultTab = (tabIds: Array<TabIdProps>) =>
-    setActiveTab(tabIds[0].tabId);
-
-  const tabClasses = classnames(
-    {
-      scrollable: scrollable,
-    },
-    className
-  );
-
-  // scrollable
-  const scrollTab = (direction: Direction) => {
-    if (tabScrollArea && tabScrollArea.current) {
-      const boundingBox = tabScrollArea.current.getBoundingClientRect();
-      const scrollWindowWidth = boundingBox.width;
-      const scrollPosition = tabScrollArea.current.scrollLeft;
-
-      switch (direction) {
-        case "right":
-          if (scrollPosition + scrollWindowWidth > maxScrollLeft) {
-            tabScrollArea.current.scrollLeft = maxScrollLeft;
-            setScrollPosition(maxScrollLeft);
-          } else {
-            tabScrollArea.current.scrollLeft =
-              tabScrollArea.current.scrollLeft + scrollWindowWidth;
-            setScrollPosition(
-              tabScrollArea.current.scrollLeft + scrollWindowWidth
-            );
-          }
-          break;
-        case "left":
-          if (scrollPosition - scrollWindowWidth > 0) {
-            tabScrollArea.current.scrollLeft = 0;
-            setScrollPosition(0);
-          } else {
-            tabScrollArea.current.scrollLeft =
-              tabScrollArea.current.scrollLeft - scrollWindowWidth;
-            setScrollPosition(
-              tabScrollArea.current.scrollLeft - scrollWindowWidth
-            );
-          }
-          break;
-        default:
-          break;
-      }
-    }
-  };
-
-  const handleDrag = useCallback(
-    debounce(({ translation, clientX, clientY, id }) => {
-      setIsDragging(true);
-
-      if (tabScrollArea && tabScrollArea.current) {
-        const scrollPosition = tabScrollArea.current.scrollLeft;
-        tabScrollArea.current.scrollLeft =
-          tabScrollArea.current.scrollLeft - translation.x;
-      }
-    }, 2),
-    []
-  );
-
-  const handleDragEnd = useCallback(
-    () => setTimeout(() => setIsDragging(false), 100),
-    []
-  );
-
-  const calculateMaxLeftScroll = () => {
-    if (tabScrollArea && tabScrollArea.current && draggableRef) {
-      const boundingBox = tabScrollArea.current.getBoundingClientRect();
-      const scrollableAreaWidth = draggableRef.current?.offsetWidth || 0;
-      const scrollWindowWidth = boundingBox.width;
-      if (scrollableAreaWidth > 0 && scrollWindowWidth > 0) {
-        const maxScroll = scrollableAreaWidth - scrollWindowWidth || 0;
-        setMaxScrollLeft(maxScroll);
-      }
-    }
-  };
-
-  const onScroll = () => {
-    setScrollPosition(tabScrollArea.current?.scrollLeft || scrollPosition);
-    updateScrollArrowState(maxScrollLeft);
-  };
-
-  // TODO: Need to change this
-  const onWindowResize = debounce((e) => {
-    if (
-      draggableRef.current &&
-      draggableRef.current.offsetWidth &&
-      draggableRef.current.offsetWidth > e.target.innerWidth
-    ) {
-      setShowArrows(true);
-    } else {
-      setShowArrows(false);
-    }
-    // TODO: this one has the issue of caching
-    updateScrollArrowState(maxScrollLeft);
-  }, 50);
-
-  const updateScrollArrowState = (lmaxScrollLeft: number) => {
-    if (tabScrollArea && tabScrollArea.current && lmaxScrollLeft > 0) {
-      const newState = { left: false, right: false };
-
-      if (tabScrollArea.current.scrollLeft <= 0) {
-        newState.left = true;
-      }
-
-      if (tabScrollArea.current.scrollLeft >= lmaxScrollLeft) {
-        newState.right = true;
-      }
-
-      setArrowState(newState);
-    }
-  };
-
-  const scrollButton = (direction: Direction) => {
-    return (
-      <ScrollArrow
-        direction={direction}
-        disabled={arrowState[direction === "left" ? "left" : "right"]}
-        onClick={() => scrollTab(direction)}
-      ></ScrollArrow>
-    );
-  };
-
-  useEffect(() => {
-    const cachedTabIds = generateIDS();
-    setDefaultTab(cachedTabIds);
-    calculateMaxLeftScroll();
-  }, []);
-
-  // Listener for on window resize
-  useEffect(() => {
-    window.addEventListener("resize", onWindowResize);
-    return window.removeEventListener("resize", () => {});
-  }, []);
-
-  useEffect(() => {
     const updateTabHighlightPosition = (activeTab: string) => {
       if (tabRefs && tabRefs.current.length > 0) {
         const activeTabRef = tabRefs.current.find(
@@ -392,21 +378,11 @@ export const Tabs = ({
     };
 
     updateTabHighlightPosition(activeTab);
-  }, [fullWidth, activeTab]);
-
-  // Listener for on scroll
-  useEffect(() => {
-    tabScrollArea.current?.addEventListener("scroll", onScroll);
-    return tabScrollArea.current?.removeEventListener("scroll", () => {});
-  }, [tabScrollArea]);
+  }, [activeTab]);
 
   useEffect(() => {
     calculateMaxLeftScroll();
   }, [draggableRef, tabScrollArea]);
-
-  useEffect(() => {
-    updateScrollArrowState(maxScrollLeft);
-  }, [maxScrollLeft, scrollPosition]);
 
   return (
     <TabsContainer id={id} className={tabClasses}>
@@ -419,52 +395,42 @@ export const Tabs = ({
         <TabsList
           ref={tabScrollArea}
           role="tablist"
+          onScroll={onTabListScroll}
           className={`${fullWidth ? "flex-grow-1" : ""}`}
         >
           <Draggable
             draggableRef={draggableRef}
             onDrag={handleDrag}
-            onDragEnd={handleDragEnd}
+            onDragEnd={() => {}}
           >
             {children.map((child: any, index: number) => {
               const { label, className = "" } = child.props;
               const newProps = {
                 className: `${fullWidth ? "flex-grow-1" : ""} ${className}`,
-                id,
+                id: tabIds[index].tabId,
                 ref: (ref: any) => pushTabRef(ref, index),
                 activeTab: { activeTab },
-                key: label,
+                key: tabIds[index].tabId,
                 label: label,
                 onTabClick: onTabSelection,
-                ...ids[index],
+                ...tabIds[index],
               };
               return cloneElement(child, { ...newProps });
             })}
           </Draggable>
-          {scrollable && (
-            <TabHighlight
-              leftOffset={highlightOffset}
-              width={hightlightWidth}
-            />
-          )}
+          <TabHighlight leftOffset={highlightOffset} width={hightlightWidth} />
         </TabsList>
         {scrollable && showArrows && scrollButton("right")}
       </div>
-      {!scrollable && (
-        <TabHighlight leftOffset={highlightOffset} width={hightlightWidth} />
-      )}
       {children.map((child: any, index: number) => {
-        const tabId = ids[index] && ids[index].tabId ? ids[index].tabId : "";
-        const tabPanelId =
-          ids[index] && ids[index].tabPanelId ? ids[index].tabPanelId : "";
-
         return (
           <TabPanel
             tabIndex={0}
             role="tabpanel"
-            id={tabPanelId}
-            aria-labelledby={tabId}
-            className={`${activeTab !== tabId ? "hidden" : ""}`}
+            key={tabIds[index].tabPanelId}
+            id={tabIds[index].tabPanelId}
+            aria-labelledby={tabIds[index].tabId}
+            className={`${activeTab !== tabIds[index].tabId ? "hidden" : ""}`}
           >
             {child.props.children}
           </TabPanel>
