@@ -169,7 +169,7 @@ export const Tabs = ({
   scrollable = false,
   alignment = "center",
 }: ITabs) => {
-  const [activeTab, setActiveTab] = useState(children[0].props.label);
+  const [activeTab, setActiveTab] = useState("");
   const [ids, setIds] = useState<Array<TabIdProps>>([]);
   const [hightlightWidth, setHighlightWidth] = useState(90);
   const [highlightOffset, sethighlightOffset] = useState(0);
@@ -318,6 +318,11 @@ export const Tabs = ({
     },
     className
   );
+
+  useEffect(() => {
+    // Set Default Tab
+    activeTab === "" && setActiveTab(tabIds[0].tabId);
+  }, []);
 
   // Listener for on window resize
   useEffect(() => {
