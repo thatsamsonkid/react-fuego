@@ -115,7 +115,7 @@ const ArrowDisabled = css`
   &:hover,
   &:focus {
     background-color: ${({ theme }) =>
-      theme && theme.tabs && theme.tabs.bg} !important;
+    theme && theme.tabs && theme.tabs.bg} !important;
   }
 
   &::before {
@@ -141,7 +141,7 @@ const ScrollArrow = styled.button<IArrowButton>`
     top: 20px;
 
     ${({ direction }) =>
-      direction === "right" ? RightScrollArrowStyles : LeftScrollArrowStyles}
+    direction === "right" ? RightScrollArrowStyles : LeftScrollArrowStyles}
   }
 
   ${({ disabled }) => disabled && ArrowDisabled}
@@ -341,43 +341,42 @@ export const Tabs = ({
 
   // On Active Tab Change
   useEffect(() => {
-    if (activeTab && tabScrollArea && tabScrollArea.current) {
+
+    const updateTabHighlightPosition = (activeTabRef: HTMLElement) => {
+      if (activeTabRef) {
+        const offset = activeTabRef.offsetLeft;
+        sethighlightOffset(offset);
+        setHighlightWidth(activeTabRef.offsetWidth);
+      }
+    };
+
+    const tabIndex = tabIds.findIndex((tab: any) => tab.tabId === activeTab);
+    const activeTabRef = tabIndex >= -1 ? tabRefs.current[tabIndex] : null;
+
+    if (activeTab && tabScrollArea && tabScrollArea.current && activeTabRef) {
       const rightBoundScrollArea =
         tabScrollArea.current?.offsetWidth + scrollPosition;
       const rightBoundCoordinateOfButton =
-        activeTab.offsetLeft + activeTab.offsetWidth;
+        activeTabRef.offsetLeft + activeTabRef.offsetWidth;
+
       if (rightBoundScrollArea < rightBoundCoordinateOfButton) {
         const portionOfTabViewable =
-          (activeTab.offsetLeft - rightBoundScrollArea) * -1;
-        const delta = activeTab.offsetWidth - portionOfTabViewable;
+          (activeTabRef.offsetLeft - rightBoundScrollArea) * -1;
+        const delta = activeTabRef.offsetWidth - portionOfTabViewable;
         const newPosition = (tabScrollArea.current.scrollLeft =
           tabScrollArea.current.scrollLeft + delta);
         setScrollPosition(newPosition);
       }
 
-      if (scrollPosition > activeTab.offsetLeft) {
-        const delta = scrollPosition - activeTab.offsetLeft;
+      if (scrollPosition > activeTabRef.offsetLeft) {
+        const delta = scrollPosition - activeTabRef.offsetLeft;
         const newPosition = (tabScrollArea.current.scrollLeft =
           tabScrollArea.current.scrollLeft - delta);
         setScrollPosition(newPosition);
       }
+
+      updateTabHighlightPosition(activeTabRef);
     }
-
-    const updateTabHighlightPosition = (activeTab: string) => {
-      if (tabRefs && tabRefs.current.length > 0) {
-        const activeTabRef = tabRefs.current.find(
-          (tab: any) => tab && tab.id === activeTab
-        );
-
-        if (activeTabRef) {
-          const offset = activeTabRef.offsetLeft;
-          sethighlightOffset(offset);
-          setHighlightWidth(activeTabRef.offsetWidth);
-        }
-      }
-    };
-
-    updateTabHighlightPosition(activeTab);
   }, [activeTab]);
 
   useEffect(() => {
@@ -387,9 +386,8 @@ export const Tabs = ({
   return (
     <TabsContainer id={id} className={tabClasses}>
       <div
-        className={`${scrollable ? "scrollable-area" : ""} ${
-          alignment === "center" ? "justify-content-center" : ""
-        }`}
+        className={`${scrollable ? "scrollable-area" : ""} ${alignment === "center" ? "justify-content-center" : ""
+          }`}
       >
         {scrollable && showArrows && scrollButton("left")}
         <TabsList
@@ -401,7 +399,7 @@ export const Tabs = ({
           <Draggable
             draggableRef={draggableRef}
             onDrag={handleDrag}
-            onDragEnd={() => {}}
+            onDragEnd={() => { }}
           >
             {children.map((child: any, index: number) => {
               const { label, className = "" } = child.props;
