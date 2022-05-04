@@ -25,6 +25,7 @@ interface IListbox {
   onSelection?: any;
   onChange?: any;
   fieldSize?: "small" | "regular";
+  ref?: any;
 }
 
 const ListboxWrapper = styled.div<IListbox>`
@@ -116,7 +117,7 @@ const ListboxWrapper = styled.div<IListbox>`
   }
 `;
 
-export const Listbox = forwardRef<unknown, any>(
+export const Listbox = forwardRef(
   (
     {
       label = "",
